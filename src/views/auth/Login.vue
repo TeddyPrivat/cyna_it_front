@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LoginFields from "@/components/LoginFields.vue";
+import LoginFields from "@/components/auth/LoginFields.vue";
 
 </script>
 
@@ -12,11 +12,14 @@ import LoginFields from "@/components/LoginFields.vue";
       <div class="columns is-vcentered">
         <div class="column">
           <figure class="image">
-            <img src="../assets/cyna_logo.png" class="has-rounded-corners" alt="logo de l'entreprise Cyna"/>
+            <img src="../../assets/cyna_logo.png" class="has-rounded-corners" alt="logo de l'entreprise Cyna"/>
           </figure>
         </div>
         <div class="column">
           <login-fields/>
+          <div class="mt-2 ml-1">
+            <a href="#" class="is-georama">Mot de passe oublié</a>
+          </div>
           <div class="field is-grouped is-grouped-centered">
             <div class="control mt-5">
               <button type="submit" class="button is-rounded is-medium is-purple is-georama">
