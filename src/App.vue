@@ -1,14 +1,12 @@
 <template>
   <div>
-    <test/>
-    <User/>
+    <Login/>
   </div>
 
 </template>
 
 <script setup lang="ts">
-import Test from "@/components/Test.vue";
-import User from "@/components/User.vue";
+import Login from "@/views/Login.vue";
 </script>
 
 <style scoped>
