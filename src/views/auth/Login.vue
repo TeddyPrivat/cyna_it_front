@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import LoginFields from "@/components/auth/LoginFields.vue";
-
 </script>
 
 <template>

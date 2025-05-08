@@ -1,11 +1,11 @@
 <template>
   <div>
-    <SignUp/>
+    <CardProduct/>
   </div>
 </template>
 
 <script setup lang="ts">
-import SignUp from "@/views/auth/SignUp.vue";
+import CardProduct from "@/components/Products/CardProduct.vue";
 </script>
 
 <style scoped>
