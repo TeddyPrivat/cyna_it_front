@@ -35,5 +35,6 @@ hr{
 }
 .subtitle{
   font-size: 0.85rem;
+  text-align: justify;
 }
 </style>
