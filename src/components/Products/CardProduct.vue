@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import type { Product } from '@/types/Product.ts'
 
+defineProps<{product: Product}>()
 </script>
 
 <template>
@@ -13,16 +15,16 @@
       </figure>
     </div>
   <div class="card-content">
-    <p class="title is-6 mb-3 mt-0">Nom du produit</p>
-    <p class="subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.</p>
+    <div class="is-flex is-justify-content-space-between is-align-items-center">
+      <p class="title is-6 m-0">{{product.name}}</p>
+      <p class="has-text-weight-bold ml-1">{{product.price}}€</p>
+    </div>
+    <p class="subtitle mt-2">{{product.description}}</p>
   </div>
 </div>
 </template>
 
 <style scoped>
-.card{
-  max-width: 250px;
-}
 img{
   max-height: 100px;
   max-width: 100%;
