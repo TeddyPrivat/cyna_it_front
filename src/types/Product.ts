@@ -1,8 +1,6 @@
-export interface Product{
-  id: number,
-  name: string,
-  description: string,
-  imgUrl: string,
-  price: number,
+import type { CardItem } from '@/types/CardItem.ts'
+
+export interface Product extends CardItem {
+  imgUrl: string
   stock: number
 }

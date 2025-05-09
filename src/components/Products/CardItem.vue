@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { Product } from '@/types/Product.ts'
+import type { CardItem } from '@/types/CardItem.ts'
 
-defineProps<{product: Product}>()
+const props = defineProps<{item: CardItem}>()
+
 </script>
 
 <template>
@@ -16,10 +17,10 @@ defineProps<{product: Product}>()
     </div>
   <div class="card-content">
     <div class="is-flex is-justify-content-space-between is-align-items-center">
-      <p class="title is-6 m-0">{{product.name}}</p>
-      <p class="has-text-weight-bold ml-1">{{product.price}}€</p>
+      <p class="title is-6 m-0">{{item.title}}</p>
+      <p class="has-text-weight-bold ml-1">{{item.price}}€</p>
     </div>
-    <p class="subtitle mt-2">{{product.description}}</p>
+    <p class="subtitle mt-2">{{item.description}}</p>
   </div>
 </div>
 </template>
