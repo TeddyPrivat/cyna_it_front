@@ -2,7 +2,6 @@
 import type { CardItem } from '@/types/CardItem.ts'
 
 const props = defineProps<{item: CardItem}>()
-
 </script>
 
 <template>
