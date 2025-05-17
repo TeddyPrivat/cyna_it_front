@@ -27,7 +27,7 @@ onMounted(async () => {
 })
 function goToDetails(id: number) {
   if(props.type === 'produit') {
-
+    router.push({name: 'product-details', params: {id}});
   }else{
     router.push({name: 'service-details', params: {id}});
   }

@@ -3,7 +3,7 @@ import Test from '../components/Test.vue'
 import User from "../components/User.vue";
 import Login from "@/views/auth/Login.vue";
 import ListItems from '@/components/Products/ListItems.vue';
-import ServiceDetails from '@/views/Services/ServiceDetails.vue';
+import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,8 +31,20 @@ const router = createRouter({
     {
       path: '/service/:id',
       name: 'service-details',
-      component: ServiceDetails,
-      props: true
+      component: ServiceAndProductDetails,
+      props: route => ({
+        id: Number(route.params.id),
+        type: 'service'
+      })
+    },
+    {
+      path: '/product/:id',
+      name: 'product-details',
+      component: ServiceAndProductDetails,
+      props: route => ({
+        id: Number(route.params.id),
+        type: 'produit'
+      })
     },
   ],
 })

@@ -1,19 +1,28 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 import type { Service } from '@/types/Service.ts'
+import type { Product } from "@/types/Product.ts";
 
-const service = ref<Service>();
-const route = useRoute();
+const item = ref<Service | Product>();
 const router = useRouter();
+const props = defineProps<{
+  id: number,
+  type: 'produit' | 'service'
+}>();
 
 onMounted(async () => {
   try{
-    const res = await axios.get(`http://localhost:8000/api/service/${route.params.id}`);
-    service.value = res.data;
+    if(props.type === 'produit'){
+     const res = await axios.get(`http://localhost:8000/api/product/${props.id}`);
+     item.value = res.data;
+    }else if(props.type === 'service'){
+     const res = await axios.get(`http://localhost:8000/api/service/${props.id}`);
+     item.value = res.data;
+    }
   }catch(error){
-    console.log("Impossible d'afficher en détails le service", error);
+    console.log("Impossible d'afficher en détails le service ou le produit", error);
   }
 });
 function backToList(){
@@ -29,7 +38,7 @@ function backToList(){
 
   <div class="container is-flex is-justify-content-center is-align-items-center" style="min-height: 90vh;">
     <div class="box">
-      <div v-if="service">
+      <div v-if="item">
         <div class="columns is-vcentered">
           <div class="column is-two-third">
             <figure class="image is-3by2">
@@ -38,10 +47,10 @@ function backToList(){
           </div>
 
           <div class="column">
-            <h1 class="title has-text-centered">{{ service.title }}</h1>
-            <p class="mb-4 has-text-centered">{{ service.description }}</p>
+            <h1 class="title has-text-centered">{{ item.title }}</h1>
+            <p class="mb-4 has-text-centered">{{ item.description }}</p>
             <p class="title has-text-centered has-text-weight-bold is-purple-title">
-              {{ service.price }}€
+              {{ item.price }}€
             </p>
           </div>
         </div>
