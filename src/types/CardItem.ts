@@ -2,5 +2,6 @@ export interface CardItem {
   id: number
   title: string
   description: string
-  price: number
+  imgUrl: string,
+  price: number,
 }

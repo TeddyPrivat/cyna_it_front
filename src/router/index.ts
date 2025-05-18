@@ -43,7 +43,7 @@ const router = createRouter({
       component: ServiceAndProductDetails,
       props: route => ({
         id: Number(route.params.id),
-        type: 'produit'
+        type: 'product'
       })
     },
   ],

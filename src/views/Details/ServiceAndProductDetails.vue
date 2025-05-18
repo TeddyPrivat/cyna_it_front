@@ -9,12 +9,12 @@ const item = ref<Service | Product>();
 const router = useRouter();
 const props = defineProps<{
   id: number,
-  type: 'produit' | 'service'
+  type: 'product' | 'service'
 }>();
 
 onMounted(async () => {
   try{
-    if(props.type === 'produit'){
+    if(props.type === 'product'){
      const res = await axios.get(`http://localhost:8000/api/product/${props.id}`);
      item.value = res.data;
     }else if(props.type === 'service'){
@@ -42,7 +42,13 @@ function backToList(){
         <div class="columns is-vcentered">
           <div class="column is-two-third">
             <figure class="image is-3by2">
-              <img src="@/assets/logo_service_saas.png" alt="Image du service">
+              <img v-if="props.type === 'product'"
+                src="@/assets/cyna_logo.png"
+                alt="Image du produit"
+              />
+              <img v-else
+                src="@/assets/logo_service_saas.png"
+                alt="Image du service">
             </figure>
           </div>
 

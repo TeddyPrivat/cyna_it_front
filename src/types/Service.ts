@@ -1,3 +1,3 @@
 import type {CardItem} from "@/types/CardItem.ts";
 
-export interface Service extends CardItem {}
+export interface Service extends CardItem { }

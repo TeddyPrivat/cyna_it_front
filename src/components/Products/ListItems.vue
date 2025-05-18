@@ -8,16 +8,24 @@ import type { CardItem as CardItemService } from '@/types/CardItem'
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
-  type: 'produit' | 'service'
+  type: "product" | "service"
 }>();
 const router = useRouter();
-const items = ref<CardItemService[]>([])
+const items = ref<CardItemService[]>([]);
+
+function goToDetails(id: number) {
+  if(props.type === "product") {
+    router.push({name: 'product-details', params: {id}});
+  }else{
+    router.push({name: 'service-details', params: {id}});
+  }
+}
 onMounted(async () => {
   try{
-    if (props.type === 'produit') {
+    if (props.type === "product") {
       const res = await axios.get<Product[]>('http://localhost:8000/api/products');
       items.value = res.data;
-    } else if (props.type === 'service') {
+    } else {
       const res = await axios.get<Service[]>('http://localhost:8000/api/services');
       items.value = res.data;
     }
@@ -25,19 +33,15 @@ onMounted(async () => {
     console.error('Erreur lors du chargement des produits:', error);
   }
 })
-function goToDetails(id: number) {
-  if(props.type === 'produit') {
-    router.push({name: 'product-details', params: {id}});
-  }else{
-    router.push({name: 'service-details', params: {id}});
-  }
-}
 </script>
 
 <template>
   <div class="container mt-2">
-    <div class="grid is-col-min-10 is-column-gap-4 is-row-gap-4">
-      <div class="cell is-clickable" v-for="item in items" :key="item.id" @click="goToDetails(item.id)">
+    <div class="grid is-col-min-11 is-column-gap-4 is-row-gap-4">
+      <div class="cell is-clickable"
+           v-for="item in items"
+           :key="item.id"
+           @click="goToDetails(item.id)">
         <CardItem :item="item"/>
       </div>
     </div>
