@@ -11,10 +11,12 @@
       <router-view v-else />
     </div>
   </div>
+  <FooterComponent/>
 </template>
 
 <script setup lang="ts">
 import ListItems from '@/components/Products/ListItems.vue';
+import FooterComponent from "@/components/FooterComponent.vue";
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
