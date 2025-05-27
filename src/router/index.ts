@@ -1,23 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import Test from '../components/Test.vue'
 import User from "../components/User.vue";
+<<<<<<< HEAD
 import SignIn from '@/components/auth/SignIn.vue';
+=======
+import Login from "@/views/auth/Login.vue";
+import ListItems from '@/components/Products/ListItems.vue';
+import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
+import CGU from '@/views/FooterViews/CGU.vue';
+import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
+import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
+>>>>>>> origin/develop-teddy
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'liste',
+      component: ListItems
     },
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },{
       path: '/test',
@@ -26,10 +31,56 @@ const router = createRouter({
       path: '/users',
       component: User
     },{
+<<<<<<< HEAD
       path:'/signin',
       component: SignIn
+=======
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+    {
+      path: '/service/:id',
+      name: 'service-details',
+      component: ServiceAndProductDetails,
+      props: route => ({
+        id: Number(route.params.id),
+        type: 'service'
+      })
+    },
+    {
+      path: '/product/:id',
+      name: 'product-details',
+      component: ServiceAndProductDetails,
+      props: route => ({
+        id: Number(route.params.id),
+        type: 'product'
+      })
+    },
+    {
+      path: '/cgu',
+      name: 'cgu',
+      component: CGU
+    },
+    {
+      path: '/mentions-legales',
+      name: 'mentions-legales',
+      component: LegalsMentions
+    },
+    {
+      path: '/dashboard/products',
+      name: 'DashboardProducts',
+      component: DashboardProducts,
+>>>>>>> origin/develop-teddy
     }
   ],
+  scrollBehavior(to, from, savedPosition) { // Permet d'arriver en haut de chaque page avec le scroll
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  }
 })
 
 export default router
