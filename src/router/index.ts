@@ -6,6 +6,7 @@ import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
 import CGU from '@/views/FooterViews/CGU.vue';
 import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
+import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,11 @@ const router = createRouter({
       path: '/mentions-legales',
       name: 'mentions-legales',
       component: LegalsMentions
+    },
+    {
+      path: '/dashboard/products',
+      name: 'DashboardProducts',
+      component: DashboardProducts,
     }
   ],
   scrollBehavior(to, from, savedPosition) { // Permet d'arriver en haut de chaque page avec le scroll
