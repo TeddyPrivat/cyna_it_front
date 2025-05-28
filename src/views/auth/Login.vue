@@ -3,7 +3,11 @@
 import { ref } from 'vue';
 import LoginFields from '@/components/auth/LoginFields.vue';
 import { login } from '@/services/auth';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
+const userStore = useUserStore();
+const router = useRouter();
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
@@ -13,12 +17,14 @@ const handleLogin = async () => {
   try {
     const token = await login(email.value, password.value);
     localStorage.setItem('jwt', token);
-    alert('Connexion réussie !');
+    console.log('Connexion réussie !');
+    await userStore.initializeUser();
+
+    router.push('/')
     console.log(token)
   } catch (err) {
     console.error(err);
-    alert('Échec de la connexion');
-    errorMessage.value = 'Erreur de connexion';
+    errorMessage.value = 'Erreur de connexion, vérifier votre email et mot de passe';
   }
 };
 </script>
@@ -41,7 +47,7 @@ const handleLogin = async () => {
             v-model:model-value-password="password"
             :error-message="errorMessage"
           />
-          <div class="mt-2 ml-1">
+          <div class="mt-2 ml-3">
             <a href="#" class="is-georama">Mot de passe oublié</a>
           </div>
           <div class="field is-grouped is-grouped-centered">

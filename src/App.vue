@@ -1,5 +1,8 @@
 <template>
-  <Header/>
+  <template v-if="route.path !== '/logout'">
+    <Header />
+  </template>
+
   <main>
     <div>
       <template v-if="route.path === '/'">

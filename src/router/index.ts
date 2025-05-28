@@ -4,6 +4,8 @@ import User from "../components/User.vue";
 import Login from "@/views/auth/Login.vue";
 import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
+import SignUp from '@/views/auth/SignUp.vue';
+import Logout from '@/views/auth/Logout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +29,16 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignUp,
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: Logout,
     },
     {
       path: '/service/:id',
