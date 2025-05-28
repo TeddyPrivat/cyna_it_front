@@ -8,18 +8,27 @@ const props = defineProps<{
 
 <template>
  <div class="modal" :class="{ 'is-active': active }">
-   <div class="modal-background is-blurred" @click="$emit('close')"></div>
+   <div class="modal-background" @click="$emit('close')"></div>
    <div class="modal-content">
-     <AddProductForm/>
+     <div class="card">
+       <div class="card-header">
+         <div class="card-header-title title is-5">
+           Création d'un produit
+         </div>
+         <button class="card-header-icon">
+           <span class="icon" @click="$emit('close')">
+             <i class="fas fa-xmark" aria-hidden="true"></i>
+           </span>
+         </button>
+       </div>
+       <div class="card-content">
+         <AddProductForm/>
+       </div>
+     </div>
    </div>
-   <button class="modal-close is-large" aria-label="close" @click="$emit('close')"></button>
  </div>
 </template>
 
 <style scoped>
-.modal-background.is-blurred{
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  background-color: rgba(10, 10, 10, 0.4);
-}
+
 </style>
