@@ -3,10 +3,17 @@ import axios from 'axios';
 import type { Product } from '@/types/Product.ts';
 import { onMounted, ref } from 'vue';
 import DeleteProductDialog from '@/components/DeleteProductDialog.vue';
+import AddProductDialog from '@/components/AddProductDialog.vue'
 
 const products = ref<Product[]>([]);
 const isModalOpen = ref(false);
 const productToDelete = ref<Product | null>(null);
+const isAddProductModalOpen = ref(false);
+
+
+function openAddModal(): void{
+  isAddProductModalOpen.value = true;
+}
 
 function openDeleteModal(product: Product): void {
   isModalOpen.value = true;
@@ -45,7 +52,7 @@ onMounted(async () => {
           <i class="fas fa-search"></i>
         </span>
       </div>
-      <button class="button is-success is-medium ml-3">Ajouter un produit</button>
+      <button class="button is-success is-medium ml-3" @click="openAddModal">Ajouter un produit</button>
     </div>
     <table class="table is-striped mt-5">
       <thead>
@@ -76,6 +83,11 @@ onMounted(async () => {
     :product="productToDelete"
     @close="isModalOpen = false"
     @confirm="deleteProduct(productToDelete?.id)"
+  />
+
+  <AddProductDialog
+    :active="isAddProductModalOpen"
+    @close="isAddProductModalOpen = false"
   />
 </template>
 
