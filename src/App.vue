@@ -15,10 +15,12 @@
       <router-view v-else />
     </div>
   </main>
+  <FooterComponent/>
 </template>
 
 <script setup lang="ts">
 import ListItems from '@/components/Products/ListItems.vue';
+import FooterComponent from "@/components/FooterComponent.vue";
 import { useRoute } from 'vue-router';
 import Header from '@/components/Header.vue'
 
