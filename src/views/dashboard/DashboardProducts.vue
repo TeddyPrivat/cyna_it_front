@@ -3,16 +3,25 @@ import axios from 'axios';
 import type { Product } from '@/types/Product.ts';
 import { onMounted, ref } from 'vue';
 import DeleteProductDialog from '@/components/DeleteProductDialog.vue';
-import AddProductDialog from '@/components/AddProductDialog.vue'
+import AddProductDialog from '@/components/AddProductDialog.vue';
 
 const products = ref<Product[]>([]);
+const product = ref<Product | null>(null);
 const isModalOpen = ref(false);
 const productToDelete = ref<Product | null>(null);
+const productToModify = ref<Product | null>(null);
 const isAddProductModalOpen = ref(false);
-
+const formMode = ref("create");
 
 function openAddModal(): void{
+  formMode.value = "create";
   isAddProductModalOpen.value = true;
+}
+
+function openEditModal(product: Product){
+  productToModify.value = product;
+  openAddModal();
+  formMode.value = "edit";
 }
 
 const fetchProducts = async () => {
@@ -42,6 +51,7 @@ async function deleteProduct(id: number | undefined) {
     console.log("Impossible de supprimer ce produit :", error);
   }
 }
+
 onMounted(async () => {
   try{
     const res = await axios.get<Product[]>('http://localhost:8000/api/products');
@@ -70,6 +80,7 @@ onMounted(async () => {
           <th>Nom</th>
           <th>Description</th>
           <th>Prix</th>
+          <th>Stock</th>
           <th>Catégorie(s)</th>
           <th></th>
           <th></th>
@@ -80,9 +91,10 @@ onMounted(async () => {
           <td>{{product.title}}</td>
           <td>{{product.description}}</td>
           <td>{{product.price}}€</td>
+          <td>{{product.stock}}</td>
           <td></td>
 <!--          <td>{{product.category}}</td>-->
-          <td><button class="button is-warning">Modifier</button></td>
+          <td><button class="button is-warning" @click="openEditModal(product)">Modifier</button></td>
           <td><button class="button is-danger" @click="openDeleteModal(product)">Supprimer</button></td>
         </tr>
       </tbody>
@@ -96,7 +108,17 @@ onMounted(async () => {
   />
 
   <AddProductDialog
+    v-if="formMode === 'edit'"
+    :product="productToModify"
     :active="isAddProductModalOpen"
+    :formMode="formMode"
+    @close="closeAddModal"
+  />
+  <AddProductDialog
+    v-else
+    :active="isAddProductModalOpen"
+    :product="product"
+    :formMode="formMode"
     @close="closeAddModal"
   />
 </template>
