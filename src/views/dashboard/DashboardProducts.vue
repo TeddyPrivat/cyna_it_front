@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import axios from 'axios';
 import type { Product } from '@/types/Product.ts';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue'
 import DeleteProductDialog from '@/components/DeleteProductDialog.vue';
 import AddProductDialog from '@/components/AddProductDialog.vue';
 
@@ -12,7 +12,7 @@ const productToDelete = ref<Product | null>(null);
 const productToModify = ref<Product | null>(null);
 const isAddProductModalOpen = ref(false);
 const formMode = ref("create");
-
+const searchedInput = ref("");
 function openAddModal(): void{
   formMode.value = "create";
   isAddProductModalOpen.value = true;
@@ -52,6 +52,12 @@ async function deleteProduct(id: number | undefined) {
   }
 }
 
+const filteredProducts = computed(() => {
+    return products.value.filter(product =>
+      product.title.toLowerCase().includes(searchedInput.value.toLowerCase())
+    )
+})
+
 onMounted(async () => {
   try{
     const res = await axios.get<Product[]>('http://localhost:8000/api/products');
@@ -67,7 +73,7 @@ onMounted(async () => {
     <h1 class="title is-1 has-text-centered">Gestion de nos produits</h1>
     <div class="is-flex is-flex-direction-row is-justify-content-center">
       <div class="control has-icons-left is-flex-grow-1">
-        <input class="input is-medium" type="text" placeholder="Nom du produit"/>
+        <input class="input is-medium" type="text" v-model="searchedInput" placeholder="Nom du produit" id="inputSearch"/>
         <span class="icon is-small is-left">
           <i class="fas fa-search"></i>
         </span>
@@ -87,7 +93,7 @@ onMounted(async () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="product in products" :key="product.id">
+        <tr v-for="product in filteredProducts" :key="product.id">
           <td>{{product.title}}</td>
           <td>{{product.description}}</td>
           <td>{{product.price}}€</td>

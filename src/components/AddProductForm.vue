@@ -81,7 +81,9 @@ watch(
             placeholder="Nom du produit"
             v-model="form.title"
             id="title"
+            name="title"
             required
+            autocomplete="off"
           />
         </div>
       </div>
@@ -93,9 +95,11 @@ watch(
             class="textarea"
             v-model="form.description"
             id="description"
+            name="description"
             placeholder="Description du produit"
             rows="3"
             required
+            autocomplete="off"
           />
         </div>
       </div>
@@ -111,7 +115,9 @@ watch(
               v-model.number="form.price"
               placeholder="6.99"
               id="prix"
+              name="price"
               required
+              autocomplete="off"
             />
             <span class="icon is-small is-right">
               <i class="fas fa-euro-sign"></i>
@@ -128,7 +134,9 @@ watch(
               v-model.number="form.stock"
               placeholder="20"
               id="stock"
+              name="stock"
               required
+              autocomplete="off"
             />
             <span class="icon is-small is-right">
               <i class="fas fa-cubes"></i>
@@ -145,6 +153,7 @@ watch(
     </form>
   </div>
 </template>
+
 
 
 <style scoped>
