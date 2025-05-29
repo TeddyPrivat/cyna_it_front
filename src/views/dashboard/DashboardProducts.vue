@@ -15,6 +15,16 @@ function openAddModal(): void{
   isAddProductModalOpen.value = true;
 }
 
+const fetchProducts = async () => {
+  const response = await axios.get('http://localhost:8000/api/products');
+  products.value = response.data;
+};
+
+function closeAddModal(): void{
+  isAddProductModalOpen.value = false;
+  fetchProducts();
+}
+
 function openDeleteModal(product: Product): void {
   isModalOpen.value = true;
   productToDelete.value = product;
@@ -24,7 +34,7 @@ async function deleteProduct(id: number | undefined) {
   try{
     if(id != null){
       await axios.post(`http://localhost:8000/api/product/delete/${id}`);
-      products.value = products.value.filter(product => product.id !== id);
+      await fetchProducts();
       productToDelete.value = null;
       isModalOpen.value = false;
     }
@@ -87,7 +97,7 @@ onMounted(async () => {
 
   <AddProductDialog
     :active="isAddProductModalOpen"
-    @close="isAddProductModalOpen = false"
+    @close="closeAddModal"
   />
 </template>
 

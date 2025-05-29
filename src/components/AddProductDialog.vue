@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AddProductForm from "@/components/AddProductForm.vue";
 
-const props = defineProps<{
+defineProps<{
   active: boolean,
 }>();
 </script>
@@ -22,7 +22,7 @@ const props = defineProps<{
          </button>
        </div>
        <div class="card-content">
-         <AddProductForm/>
+         <AddProductForm @formSubmitted="$emit('close')"/>
        </div>
      </div>
    </div>

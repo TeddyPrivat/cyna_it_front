@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Product } from "@/types/Product.ts";
 
-const props = defineProps<{
+defineProps<{
   active: Boolean,
   product: Product | null
 }>();
