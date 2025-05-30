@@ -53,9 +53,12 @@ async function deleteProduct(id: number | undefined) {
 }
 
 const filteredProducts = computed(() => {
-    return products.value.filter(product =>
-      product.title.toLowerCase().includes(searchedInput.value.toLowerCase())
+  return products.value.filter(product =>
+    product.title.toLowerCase().includes(searchedInput.value.toLowerCase()) ||
+    product.categories.some(category =>
+      category.toLowerCase().includes(searchedInput.value.toLowerCase())
     )
+  )
 })
 
 onMounted(async () => {
@@ -98,8 +101,7 @@ onMounted(async () => {
           <td>{{product.description}}</td>
           <td>{{product.price}}€</td>
           <td>{{product.stock}}</td>
-          <td></td>
-<!--          <td>{{product.category}}</td>-->
+          <td><span class="tag is-white">{{product.categories.join(', ')}}</span></td>
           <td><button class="button is-warning" @click="openEditModal(product)">Modifier</button></td>
           <td><button class="button is-danger" @click="openDeleteModal(product)">Supprimer</button></td>
         </tr>

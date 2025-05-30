@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import axios from 'axios'
 import type { Product } from '@/types/Product.ts'
+import type { Category } from '@/types/Category.ts'
 
 const emit = defineEmits(['formSubmitted']);
 const props = defineProps<{
@@ -16,7 +17,13 @@ const form = ref<Product>({
   imgUrl: '',
   price: 0,
   stock: 0,
+  categories: []
 });
+const categories = ref<Category[]>([]);
+const fetchCategories = async () => {
+  const response = await axios.get("http://localhost:8000/api/categories");
+  categories.value = response.data;
+}
 
 const submitForm = async () => {
   try{
@@ -26,6 +33,7 @@ const submitForm = async () => {
       description: form.value.description,
       price: form.value.price,
       stock: form.value.stock,
+      categories: form.value.categories.map((id) => ({ id }))
     }
     if(props.formMode === "create"){
       await axios.post('http://localhost:8000/api/product/add', payload);
@@ -43,7 +51,8 @@ const submitForm = async () => {
       description: '',
       imgUrl: '',
       price: 0,
-      stock: 0
+      stock: 0,
+      categories: []
     }
   }catch(error){
     console.log("Impossible de soumettre le formulaire ", error);
@@ -61,12 +70,17 @@ watch(
         description: '',
         imgUrl: '',
         price: 0,
-        stock: 0
+        stock: 0,
+        categories: []
       }
     }
   },
   { immediate: true }
 )
+
+onMounted(() => {
+  fetchCategories();
+})
 </script>
 
 <template>
@@ -101,6 +115,28 @@ watch(
             required
             autocomplete="off"
           />
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="categories">Catégories</label>
+        <div class="control">
+          <div class="select is-multiple is-fullwidth">
+            <select
+              id="categories"
+              multiple
+              v-model="form.categories"
+              size="3"
+              required
+            >
+            <option
+              v-for="category in categories"
+              :key="category.id"
+              :value="category.id"
+            >
+              {{ category.categoryName }}
+            </option>
+            </select>
+          </div>
         </div>
       </div>
 
