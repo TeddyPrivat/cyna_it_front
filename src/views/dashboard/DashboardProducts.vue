@@ -13,6 +13,16 @@ const productToModify = ref<Product | null>(null);
 const isAddProductModalOpen = ref(false);
 const formMode = ref("create");
 const searchedInput = ref("");
+const STOCK_LOW_LIMIT: number = 10;
+const showLowStockAlert = ref(true);
+
+const productStockIsEmpty = computed(() =>
+  products.value.filter(product => product.stock === 0)
+);
+
+const lowStockProductTitles = computed(() =>
+  productStockIsEmpty.value.map(p => p.title).join(', ')
+);
 function openAddModal(): void{
   formMode.value = "create";
   isAddProductModalOpen.value = true;
@@ -39,6 +49,18 @@ function openDeleteModal(product: Product): void {
   productToDelete.value = product;
 }
 
+function getStockClass(stock: number): string{
+  if(stock === 0) return 'tag is-danger'
+  if(stock <= STOCK_LOW_LIMIT) return 'tag is-warning'
+  return 'tag';
+}
+
+function getLabelClass(stock: number): string{
+  console.log(stock);
+  if(stock === 0) return 'RUPTURE'
+  if(stock <= STOCK_LOW_LIMIT) return `${stock} ⚠`
+  return `${stock}`;
+}
 async function deleteProduct(id: number | undefined) {
   try{
     if(id != null){
@@ -74,6 +96,11 @@ onMounted(async () => {
 <template>
   <div class="container">
     <h1 class="title is-1 has-text-centered">Gestion de nos produits</h1>
+    <div class="notification is-danger" v-if="productStockIsEmpty.length > 0 && showLowStockAlert">
+      <button class="delete" @click="showLowStockAlert= false"></button>
+      <strong>Éléments en rupture de stock : </strong>
+      <span>{{ lowStockProductTitles }}.</span>
+    </div>
     <div class="is-flex is-flex-direction-row is-justify-content-center">
       <div class="control has-icons-left is-flex-grow-1">
         <input class="input is-medium" type="text" v-model="searchedInput" placeholder="Nom du produit" id="inputSearch"/>
@@ -100,7 +127,11 @@ onMounted(async () => {
           <td>{{product.title}}</td>
           <td>{{product.description}}</td>
           <td>{{product.price}}€</td>
-          <td>{{product.stock}}</td>
+          <td>
+            <span :class="getStockClass(product.stock)">
+              {{getLabelClass(product.stock)}}
+            </span>
+          </td>
           <td><span class="tag is-white">{{product.categories.join(', ')}}</span></td>
           <td><button class="button is-warning" @click="openEditModal(product)">Modifier</button></td>
           <td><button class="button is-danger" @click="openDeleteModal(product)">Supprimer</button></td>
