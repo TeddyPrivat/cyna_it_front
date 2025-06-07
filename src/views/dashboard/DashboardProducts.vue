@@ -4,6 +4,7 @@ import type { Product } from '@/types/Product.ts';
 import { computed, onMounted, ref } from 'vue'
 import DeleteProductDialog from '@/components/DeleteProductDialog.vue';
 import AddProductDialog from '@/components/AddProductDialog.vue';
+import StockAlertNotification from '@/components/StockAlertNotification.vue'
 
 const products = ref<Product[]>([]);
 const product = ref<Product | null>(null);
@@ -19,6 +20,10 @@ const showLowStockAlert = ref(true);
 const productStockIsEmpty = computed(() =>
   products.value.filter(product => product.stock === 0)
 );
+
+const closeLowStockNotification = () : void => {
+  showLowStockAlert.value = false;
+}
 
 const lowStockProductTitles = computed(() =>
   productStockIsEmpty.value.map(p => p.title).join(', ')
@@ -56,7 +61,6 @@ function getStockClass(stock: number): string{
 }
 
 function getLabelClass(stock: number): string{
-  console.log(stock);
   if(stock === 0) return 'RUPTURE'
   if(stock <= STOCK_LOW_LIMIT) return `${stock} ⚠`
   return `${stock}`;
@@ -76,9 +80,9 @@ async function deleteProduct(id: number | undefined) {
 
 const filteredProducts = computed(() => {
   return products.value.filter(product =>
-    product.title.toLowerCase().includes(searchedInput.value.toLowerCase()) ||
+    product.title.toLowerCase().includes(searchedInput.value.trim().toLowerCase()) ||
     product.categories.some(category =>
-      category.toLowerCase().includes(searchedInput.value.toLowerCase())
+      category.trim().toLowerCase().includes(searchedInput.value.trim().toLowerCase())
     )
   )
 })
@@ -96,11 +100,12 @@ onMounted(async () => {
 <template>
   <div class="container">
     <h1 class="title is-1 has-text-centered">Gestion de nos produits</h1>
-    <div class="notification is-danger" v-if="productStockIsEmpty.length > 0 && showLowStockAlert">
-      <button class="delete" @click="showLowStockAlert= false"></button>
-      <strong>Éléments en rupture de stock : </strong>
-      <span>{{ lowStockProductTitles }}.</span>
-    </div>
+    <StockAlertNotification
+      :showLowStockAlert="showLowStockAlert"
+      :productStockIsEmpty="productStockIsEmpty"
+      :lowStockProductTitles="lowStockProductTitles"
+      @close="closeLowStockNotification"
+    />
     <div class="is-flex is-flex-direction-row is-justify-content-center">
       <div class="control has-icons-left is-flex-grow-1">
         <input class="input is-medium" type="text" v-model="searchedInput" placeholder="Nom du produit" id="inputSearch"/>
