@@ -92,7 +92,7 @@ onMounted(async () => {
     const res = await axios.get<Product[]>('http://localhost:8000/api/products');
     products.value = res.data;
   }catch(error){
-    console.error("Impossible de récupérer les produits: ", error)
+    console.error("Impossible de récupérer les produits: ", error);
   }
 })
 </script>
