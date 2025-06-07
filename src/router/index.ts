@@ -9,15 +9,21 @@ import Logout from '@/views/auth/Logout.vue'
 import CGU from '@/views/FooterViews/CGU.vue';
 import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
-import AddProductDialog from '@/components/AddProductDialog.vue'
+import AddProductDialog from '@/components/AddProductDialog.vue';
+import Accueil from '@/views/Accueil.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'liste',
+    //   component: ListItems
+    // },
     {
-      path: '/',
-      name: 'liste',
-      component: ListItems
+      path:"/",
+      name:'accueil',
+      component: Accueil
     },
     {
       path: '/about',
