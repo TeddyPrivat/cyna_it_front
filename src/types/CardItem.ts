@@ -4,4 +4,5 @@ export interface CardItem {
   description: string
   imgUrl: string,
   price: number,
+  categories: Array<string>
 }

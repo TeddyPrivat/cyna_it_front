@@ -1,23 +1,71 @@
 <script setup lang="ts">
 import axios from 'axios';
 import type { Product } from '@/types/Product.ts';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue'
 import DeleteProductDialog from '@/components/DeleteProductDialog.vue';
+import AddProductDialog from '@/components/AddProductDialog.vue';
 
 const products = ref<Product[]>([]);
+const product = ref<Product | null>(null);
 const isModalOpen = ref(false);
 const productToDelete = ref<Product | null>(null);
+const productToModify = ref<Product | null>(null);
+const isAddProductModalOpen = ref(false);
+const formMode = ref("create");
+const searchedInput = ref("");
+const STOCK_LOW_LIMIT: number = 10;
+const showLowStockAlert = ref(true);
+
+const productStockIsEmpty = computed(() =>
+  products.value.filter(product => product.stock === 0)
+);
+
+const lowStockProductTitles = computed(() =>
+  productStockIsEmpty.value.map(p => p.title).join(', ')
+);
+function openAddModal(): void{
+  formMode.value = "create";
+  isAddProductModalOpen.value = true;
+}
+
+function openEditModal(product: Product){
+  productToModify.value = product;
+  openAddModal();
+  formMode.value = "edit";
+}
+
+const fetchProducts = async () => {
+  const response = await axios.get('http://localhost:8000/api/products');
+  products.value = response.data;
+};
+
+function closeAddModal(): void{
+  isAddProductModalOpen.value = false;
+  fetchProducts();
+}
 
 function openDeleteModal(product: Product): void {
   isModalOpen.value = true;
   productToDelete.value = product;
 }
 
+function getStockClass(stock: number): string{
+  if(stock === 0) return 'tag is-danger'
+  if(stock <= STOCK_LOW_LIMIT) return 'tag is-warning'
+  return 'tag';
+}
+
+function getLabelClass(stock: number): string{
+  console.log(stock);
+  if(stock === 0) return 'RUPTURE'
+  if(stock <= STOCK_LOW_LIMIT) return `${stock} ⚠`
+  return `${stock}`;
+}
 async function deleteProduct(id: number | undefined) {
   try{
     if(id != null){
       await axios.post(`http://localhost:8000/api/product/delete/${id}`);
-      products.value = products.value.filter(product => product.id !== id);
+      await fetchProducts();
       productToDelete.value = null;
       isModalOpen.value = false;
     }
@@ -25,6 +73,16 @@ async function deleteProduct(id: number | undefined) {
     console.log("Impossible de supprimer ce produit :", error);
   }
 }
+
+const filteredProducts = computed(() => {
+  return products.value.filter(product =>
+    product.title.toLowerCase().includes(searchedInput.value.toLowerCase()) ||
+    product.categories.some(category =>
+      category.toLowerCase().includes(searchedInput.value.toLowerCase())
+    )
+  )
+})
+
 onMounted(async () => {
   try{
     const res = await axios.get<Product[]>('http://localhost:8000/api/products');
@@ -38,14 +96,19 @@ onMounted(async () => {
 <template>
   <div class="container">
     <h1 class="title is-1 has-text-centered">Gestion de nos produits</h1>
+    <div class="notification is-danger" v-if="productStockIsEmpty.length > 0 && showLowStockAlert">
+      <button class="delete" @click="showLowStockAlert= false"></button>
+      <strong>Éléments en rupture de stock : </strong>
+      <span>{{ lowStockProductTitles }}.</span>
+    </div>
     <div class="is-flex is-flex-direction-row is-justify-content-center">
       <div class="control has-icons-left is-flex-grow-1">
-        <input class="input is-medium" type="text" placeholder="Nom du produit"/>
+        <input class="input is-medium" type="text" v-model="searchedInput" placeholder="Nom du produit" id="inputSearch"/>
         <span class="icon is-small is-left">
           <i class="fas fa-search"></i>
         </span>
       </div>
-      <button class="button is-success is-medium ml-3">Ajouter un produit</button>
+      <button class="button is-success is-medium ml-3" @click="openAddModal">Ajouter un produit</button>
     </div>
     <table class="table is-striped mt-5">
       <thead>
@@ -53,19 +116,24 @@ onMounted(async () => {
           <th>Nom</th>
           <th>Description</th>
           <th>Prix</th>
+          <th>Stock</th>
           <th>Catégorie(s)</th>
           <th></th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="product in products" :key="product.id">
+        <tr v-for="product in filteredProducts" :key="product.id">
           <td>{{product.title}}</td>
           <td>{{product.description}}</td>
           <td>{{product.price}}€</td>
-          <td></td>
-<!--          <td>{{product.category}}</td>-->
-          <td><button class="button is-warning">Modifier</button></td>
+          <td>
+            <span :class="getStockClass(product.stock)">
+              {{getLabelClass(product.stock)}}
+            </span>
+          </td>
+          <td><span class="tag is-white">{{product.categories.join(', ')}}</span></td>
+          <td><button class="button is-warning" @click="openEditModal(product)">Modifier</button></td>
           <td><button class="button is-danger" @click="openDeleteModal(product)">Supprimer</button></td>
         </tr>
       </tbody>
@@ -76,6 +144,21 @@ onMounted(async () => {
     :product="productToDelete"
     @close="isModalOpen = false"
     @confirm="deleteProduct(productToDelete?.id)"
+  />
+
+  <AddProductDialog
+    v-if="formMode === 'edit'"
+    :product="productToModify"
+    :active="isAddProductModalOpen"
+    :formMode="formMode"
+    @close="closeAddModal"
+  />
+  <AddProductDialog
+    v-else
+    :active="isAddProductModalOpen"
+    :product="product"
+    :formMode="formMode"
+    @close="closeAddModal"
   />
 </template>
 

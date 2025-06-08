@@ -1,16 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Test from '../components/Test.vue'
 import User from "../components/User.vue";
-<<<<<<< HEAD
+
 import SignIn from '@/components/auth/SignIn.vue';
-=======
+
 import Login from "@/views/auth/Login.vue";
 import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
 import CGU from '@/views/FooterViews/CGU.vue';
 import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
->>>>>>> origin/develop-teddy
+
+import AddProductDialog from '@/components/AddProductDialog.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,10 +33,11 @@ const router = createRouter({
       path: '/users',
       component: User
     },{
-<<<<<<< HEAD
+
       path:'/signin',
-      component: SignIn
-=======
+      component: SignIn,
+
+    },{
       path: '/login',
       name: 'login',
       component: Login
@@ -71,7 +74,12 @@ const router = createRouter({
       path: '/dashboard/products',
       name: 'DashboardProducts',
       component: DashboardProducts,
->>>>>>> origin/develop-teddy
+
+    },
+    {
+      path: '/dashboard/product/add',
+      name: 'DashboardAppProduct',
+      component: AddProductDialog
     }
   ],
   scrollBehavior(to, from, savedPosition) { // Permet d'arriver en haut de chaque page avec le scroll
