@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Test from '../components/Test.vue'
 import User from "../components/User.vue";
 import Login from "@/views/auth/Login.vue";
-import ListItems from '@/components/Products/ListItems.vue';
+// import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
 import SignUp from '@/views/auth/SignUp.vue';
 import Logout from '@/views/auth/Logout.vue'
