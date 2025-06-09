@@ -8,6 +8,7 @@ import CGU from '@/views/FooterViews/CGU.vue';
 import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
 import AddProductDialog from '@/components/AddProductDialog.vue'
+import SupportForm from '@/components/SupportForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -81,6 +82,11 @@ const router = createRouter({
       props: {
         type: 'service'
       }
+    },
+    {
+      path: '/support',
+      name: 'Support',
+      component: SupportForm
     }
   ],
   scrollBehavior(to, from, savedPosition) { // Permet d'arriver en haut de chaque page avec le scroll

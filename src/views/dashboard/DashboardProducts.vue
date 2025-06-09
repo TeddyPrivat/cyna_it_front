@@ -68,7 +68,7 @@ function openDeleteModal(item: CardItem): void {
 function getStockClass(stock: number): string{
   if(stock === 0) return 'tag is-danger'
   if(stock <= STOCK_LOW_LIMIT) return 'tag is-warning'
-  return 'tag';
+  return 'tag is-white';
 }
 
 function getLabelClass(stock: number): string{
@@ -145,6 +145,7 @@ onMounted(async () => {
         Ajouter un {{props.type === 'product' ? 'produit' : 'service'}}
       </button>
     </div>
+    <h4 class="mt-1">Nombre d'éléments recherchés: {{filteredProducts.length}}</h4>
     <table class="table is-striped mt-5">
       <thead>
         <tr>
