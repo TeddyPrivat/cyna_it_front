@@ -45,7 +45,7 @@ function openEditModal(item: CardItem){
   formMode.value = "edit";
 }
 
-const fetchProducts = async () => {
+const fetchItems = async () => {
   if(props.type === 'product'){
     const res = await axios.get<Product[]>('http://localhost:8000/api/products');
     items.value = res.data;
@@ -57,7 +57,7 @@ const fetchProducts = async () => {
 
 function closeAddModal(): void{
   isAddProductModalOpen.value = false;
-  fetchProducts();
+  fetchItems();
 }
 
 function openDeleteModal(item: CardItem): void {
@@ -82,15 +82,12 @@ async function deleteProduct(id: number | undefined) {
     if(id != null){
       if(props.type === 'product'){
         await axios.delete(`http://localhost:8000/api/product/${id}`);
-        await fetchProducts();
-        itemToDelete.value = null;
-        isModalOpen.value = false;
       }else{
         await axios.delete(`http://localhost:8000/api/service/${id}`);
-        await fetchProducts();
-        itemToDelete.value = null;
-        isModalOpen.value = false;
       }
+      await fetchItems();
+      itemToDelete.value = null;
+      isModalOpen.value = false;
     }
   }catch(error){
     console.log("Impossible de supprimer ce produit :", error);
@@ -101,7 +98,7 @@ const filteredProducts = computed(() => {
   return items.value.filter(item =>
     item.title.toLowerCase().includes(searchedInput.value.trim().toLowerCase()) ||
     item.categories.some(category =>
-      category.trim().toLowerCase().includes(searchedInput.value.trim().toLowerCase())
+      category.categoryName.trim().toLowerCase().includes(searchedInput.value.trim().toLowerCase())
     )
   )
 })
@@ -134,7 +131,12 @@ onMounted(async () => {
     />
     <div class="is-flex is-flex-direction-row is-justify-content-center">
       <div class="control has-icons-left is-flex-grow-1">
-        <input class="input is-medium" type="text" v-model="searchedInput" placeholder="Nom du produit" id="inputSearch"/>
+        <input
+          class="input is-medium"
+          type="text"
+          v-model="searchedInput"
+          :placeholder="props.type === 'product' ? 'Nom du produit' : 'Nom du service'"
+          id="inputSearch"/>
         <span class="icon is-small is-left">
           <i class="fas fa-search"></i>
         </span>
@@ -165,7 +167,7 @@ onMounted(async () => {
               {{getLabelClass(item.stock)}}
             </span>
           </td>
-          <td><span v-if="item.categories" class="tag is-white">{{item.categories.join(', ')}}</span></td>
+          <td><span class="tag is-white">{{ item.categories.map(cat => cat.categoryName).join(', ') }}</span></td>
           <td><button class="button is-warning" @click="openEditModal(item)">Modifier</button></td>
           <td><button class="button is-danger" @click="openDeleteModal(item)">Supprimer</button></td>
         </tr>

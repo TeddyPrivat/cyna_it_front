@@ -1,3 +1,5 @@
+import type { Category } from '@/types/Category.ts'
+
 export interface CardItem {
   id: number
   title: string
@@ -5,5 +7,5 @@ export interface CardItem {
   imgUrl: string,
   price: number,
   stock: number,
-  categories: Array<string>
+  categories: Array<Category>
 }

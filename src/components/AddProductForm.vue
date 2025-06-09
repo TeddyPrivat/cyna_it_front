@@ -76,7 +76,10 @@ watch(
   () => props.item,
   (newItem) => {
     if (props.formMode === 'edit' && newItem) {
-      form.value = newItem
+      form.value = {
+        ...newItem,
+        categories: newItem.categories.map((cat: Category) => cat.id) as unknown as Category[]
+      }
     } else {
       form.value = {
         id: 0,
