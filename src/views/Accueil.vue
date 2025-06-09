@@ -36,9 +36,10 @@ onMounted(async () => {
     <div class="title is-4">Carousel de produits</div>
 <!--    <div v-if="isLoading">Chargement des produits...</div>-->
     <Carousel :content-type="imageListType" :images="imageList"/>
-    <div class="title is-4">Texte fixe bonzour les amis, pour faire les annonces depuis le back office</div>
-    <div class="title is-6 box has-background-light">
-      <p>Liste des catégories</p><a class="subtitle is-6" href="#">Voir tout</a></div>
+    <div class="title is-4 mt-6">Texte fixe bonzour les amis, pour faire les annonces depuis le back office</div>
+    <div class="title is-6 mt-6 box has-background-light">
+      <p>Liste des catégories</p><a class="subtitle is-6" href="#">Voir tout</a>
+    </div>
     <Grid :items="myList" :columns="2">
       <template #default="{ item }">
         <div class="box has-text-centered">
@@ -47,7 +48,7 @@ onMounted(async () => {
       </template>
     </Grid>
 <!--    <div v-if="isLoading">Chargement des produits...</div>-->
-    <div class="title is-4">Les produits du momemt</div>
+    <div class="title is-4 mt-6">Les produits du momemt</div>
     <Carousel :content-type="imageListType" :images="imageList"/>
   </main>
 </template>
