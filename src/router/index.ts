@@ -64,11 +64,23 @@ const router = createRouter({
       path: '/dashboard/products',
       name: 'DashboardProducts',
       component: DashboardProducts,
+      props: {
+        type: 'product'
+      }
     },
     {
       path: '/dashboard/product/add',
       name: 'DashboardAppProduct',
-      component: AddProductDialog
+      component: AddProductDialog,
+
+    },
+    {
+      path: '/dashboard/services',
+      name: 'DashboardServices',
+      component: DashboardProducts,
+      props: {
+        type: 'service'
+      }
     }
   ],
   scrollBehavior(to, from, savedPosition) { // Permet d'arriver en haut de chaque page avec le scroll

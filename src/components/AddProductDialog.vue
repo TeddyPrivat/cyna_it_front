@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import AddProductForm from "@/components/AddProductForm.vue";
-import type { Product } from '@/types/Product.ts'
+import type { CardItem } from '@/types/CardItem.ts'
 
 defineProps<{
   active: boolean,
   formMode: string,
-  product: Product | null
+  item: CardItem | null,
+  type: string
 }>();
 </script>
 
@@ -16,7 +17,7 @@ defineProps<{
      <div class="card">
        <div class="card-header">
          <div class="card-header-title title is-5">
-           {{ formMode === "create" ? "Création" : "Modification" }} d'un produit
+           {{ formMode === "create" ? "Création" : "Modification" }} d'un {{type === 'product' ? 'produit' : 'service'}}
          </div>
          <button class="card-header-icon">
            <span class="icon" @click="$emit('close')">
@@ -25,7 +26,7 @@ defineProps<{
          </button>
        </div>
        <div class="card-content">
-         <AddProductForm :formMode="formMode" :product="product" @formSubmitted="$emit('close')"/>
+         <AddProductForm :formMode="formMode" :item="item" :type="type" @formSubmitted="$emit('close')"/>
        </div>
      </div>
    </div>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Product } from "@/types/Product.ts";
+import type { CardItem } from '@/types/CardItem.ts'
 
 defineProps<{
   active: Boolean,
-  product: Product | null
+  item: CardItem | null
 }>();
 
 defineEmits(['close','confirm']);
@@ -20,7 +20,7 @@ defineEmits(['close','confirm']);
       <section class="modal-card-body">
         <p>
           Êtes-vous certain de vouloir supprimer le produit suivant :
-          <strong>{{ product?.title }}</strong> ?
+          <strong>{{ item?.title }}</strong> ?
         </p>
       </section>
       <footer class="modal-card-foot is-flex is-justify-content-flex-end">

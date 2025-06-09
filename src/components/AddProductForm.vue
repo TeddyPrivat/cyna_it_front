@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue'
 import axios from 'axios'
-import type { Product } from '@/types/Product.ts'
 import type { Category } from '@/types/Category.ts'
+import type { CardItem } from "@/types/CardItem.ts";
 
 const emit = defineEmits(['formSubmitted']);
 const props = defineProps<{
   formMode: string,
-  product: Product | null
+  item: CardItem | null,
+  type: string
 }>();
 
-const form = ref<Product>({
+const form = ref<CardItem>({
   id: 0,
   title: '',
   description: '',
@@ -36,13 +37,26 @@ const submitForm = async () => {
       categories: form.value.categories.map((id) => ({ id }))
     }
     if(props.formMode === "create"){
-      await axios.post('http://localhost:8000/api/product/add', payload);
-    }else{
-      const productId = props.product?.id;
-      if(!productId){
-        console.log("Produit non trouvé")
+      if(props.type === 'product'){
+        await axios.post('http://localhost:8000/api/product', payload);
+      }else{
+        await axios.post('http://localhost:8000/api/service', payload);
       }
-      await axios.put(`http://localhost:8000/api/product/edit/${productId}`, payload);
+    }else{ // Modification
+      if(props.type === 'product'){
+        const productId = props.item?.id;
+        if(!productId){
+          console.log("Produit non trouvé");
+        }
+        await axios.put(`http://localhost:8000/api/product/${productId}`, payload);
+      }else{
+        const serviceId = props.item?.id;
+        if(!serviceId){
+          console.log("Service non trouvé");
+        }
+        await axios.put(`http://localhost:8000/api/service/${serviceId}`, payload);
+      }
+
     }
     emit("formSubmitted");
     form.value = {
@@ -59,10 +73,10 @@ const submitForm = async () => {
   }
 }
 watch(
-  () => props.product,
-  (newProduct) => {
-    if (props.formMode === 'edit' && newProduct) {
-      form.value = newProduct
+  () => props.item,
+  (newItem) => {
+    if (props.formMode === 'edit' && newItem) {
+      form.value = newItem
     } else {
       form.value = {
         id: 0,
@@ -92,7 +106,7 @@ onMounted(() => {
           <input
             class="input"
             type="text"
-            placeholder="Nom du produit"
+            :placeholder="props.type === 'product' ? 'Nom du produit' : 'Nom du service'"
             v-model="form.title"
             id="title"
             name="title"
@@ -110,7 +124,7 @@ onMounted(() => {
             v-model="form.description"
             id="description"
             name="description"
-            placeholder="Description du produit"
+            :placeholder="props.type === 'product' ? 'Description du produit' : 'Description du service'"
             rows="3"
             required
             autocomplete="off"
@@ -182,7 +196,7 @@ onMounted(() => {
 
         <div class="ml-5 mb-3">
           <button class="button is-primary" type="submit">
-            {{ props.formMode === 'create' ? 'Créer' : 'Modifier' }} le produit
+            {{ props.formMode === 'create' ? 'Créer' : 'Modifier' }} le {{props.type === 'product' ? 'produit' : 'service'}}
           </button>
         </div>
       </div>
