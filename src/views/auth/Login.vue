@@ -1,5 +1,32 @@
+<!--views\auth\Login.vue-->
 <script setup lang="ts">
-import LoginFields from "@/components/auth/LoginFields.vue";
+import { ref } from 'vue';
+import LoginFields from '@/components/auth/LoginFields.vue';
+import { login } from '@/services/auth';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
+const router = useRouter();
+const email = ref('');
+const password = ref('');
+const errorMessage = ref('');
+
+
+const handleLogin = async () => {
+  try {
+    const token = await login(email.value, password.value);
+    localStorage.setItem('jwt', token);
+    console.log('Connexion réussie !');
+    await userStore.initializeUser();
+
+    router.push('/')
+    console.log(token)
+  } catch (err) {
+    console.error(err);
+    errorMessage.value = 'Erreur de connexion, vérifier votre email et mot de passe';
+  }
+};
 </script>
 
 <template>
@@ -15,13 +42,17 @@ import LoginFields from "@/components/auth/LoginFields.vue";
           </figure>
         </div>
         <div class="column">
-          <login-fields/>
-          <div class="mt-2 ml-1">
+          <LoginFields
+            v-model:model-value-email="email"
+            v-model:model-value-password="password"
+            :error-message="errorMessage"
+          />
+          <div class="mt-2 ml-3">
             <a href="#" class="is-georama">Mot de passe oublié</a>
           </div>
           <div class="field is-grouped is-grouped-centered">
             <div class="control mt-5">
-              <button type="submit" class="button is-rounded is-medium is-purple is-georama">
+              <button @click="handleLogin" class="button is-rounded is-medium is-purple is-georama">
                 Se connecter
               </button>
             </div>
