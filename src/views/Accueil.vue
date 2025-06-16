@@ -42,7 +42,7 @@ onMounted(async () => {
     </div>
     <Grid :items="myList" :columns="2">
       <template #default="{ item }">
-        <div class="box has-text-centered"><x></x>
+        <div class="box has-text-centered">
           <a href='produit/{{index}}'>{{ item }}</a>
         </div>
       </template>
