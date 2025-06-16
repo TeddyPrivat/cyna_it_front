@@ -5,7 +5,7 @@ import User from "../components/User.vue";
 import SignIn from '@/components/auth/SignIn.vue';
 
 import Login from "@/views/auth/Login.vue";
-// import ListItems from '@/components/Products/ListItems.vue';
+import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
 import SignUp from '@/views/auth/SignUp.vue';
 import Logout from '@/views/auth/Logout.vue'
@@ -14,7 +14,8 @@ import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
 import AddProductDialog from '@/components/AddProductDialog.vue';
 import NotFound from '@/views/NotFound.vue';
-import Accueil from '@/views/Accueil.vue'
+import Accueil from '@/views/Accueil.vue';
+import SupportForm from '@/components/SupportForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,11 +92,28 @@ const router = createRouter({
       path: '/dashboard/products',
       name: 'DashboardProducts',
       component: DashboardProducts,
+      props: {
+        type: 'product'
+      }
     },
     {
       path: '/dashboard/product/add',
       name: 'DashboardAppProduct',
-      component: AddProductDialog
+      component: AddProductDialog,
+
+    },
+    {
+      path: '/dashboard/services',
+      name: 'DashboardServices',
+      component: DashboardProducts,
+      props: {
+        type: 'service'
+      }
+    },
+    {
+      path: '/support',
+      name: 'Support',
+      component: SupportForm
     },
     {
       path: '/:pathMatch(.*)*',

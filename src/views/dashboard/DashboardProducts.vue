@@ -4,21 +4,32 @@ import type { Product } from '@/types/Product.ts';
 import { computed, onMounted, ref } from 'vue'
 import DeleteProductDialog from '@/components/DeleteProductDialog.vue';
 import AddProductDialog from '@/components/AddProductDialog.vue';
+import StockAlertNotification from '@/components/StockAlertNotification.vue'
+import type {CardItem} from "@/types/CardItem.ts";
+import type {Service} from "@/types/Service.ts";
 
-const products = ref<Product[]>([]);
-const product = ref<Product | null>(null);
+const items = ref<CardItem[]>([]);
+const item = ref<CardItem | null>(null);
 const isModalOpen = ref(false);
-const productToDelete = ref<Product | null>(null);
-const productToModify = ref<Product | null>(null);
+const itemToDelete = ref<CardItem | null>(null);
+const itemToModify = ref<CardItem | null>(null);
 const isAddProductModalOpen = ref(false);
 const formMode = ref("create");
 const searchedInput = ref("");
 const STOCK_LOW_LIMIT: number = 10;
 const showLowStockAlert = ref(true);
 
+const props = defineProps<{
+  type: string
+}>();
+
 const productStockIsEmpty = computed(() =>
-  products.value.filter(product => product.stock === 0)
+  items.value.filter(product => product.stock === 0)
 );
+
+const closeLowStockNotification = () : void => {
+  showLowStockAlert.value = false;
+}
 
 const lowStockProductTitles = computed(() =>
   productStockIsEmpty.value.map(p => p.title).join(', ')
@@ -28,45 +39,54 @@ function openAddModal(): void{
   isAddProductModalOpen.value = true;
 }
 
-function openEditModal(product: Product){
-  productToModify.value = product;
+function openEditModal(item: CardItem){
+  itemToModify.value = item;
   openAddModal();
   formMode.value = "edit";
 }
 
-const fetchProducts = async () => {
-  const response = await axios.get('http://localhost:8000/api/products');
-  products.value = response.data;
+const fetchItems = async () => {
+  if(props.type === 'product'){
+    const res = await axios.get<Product[]>('http://localhost:8000/api/products');
+    items.value = res.data;
+  }else{
+    const res = await axios.get<Product[]>('http://localhost:8000/api/services');
+    items.value = res.data;
+  }
 };
 
 function closeAddModal(): void{
   isAddProductModalOpen.value = false;
-  fetchProducts();
+  fetchItems();
 }
 
-function openDeleteModal(product: Product): void {
+function openDeleteModal(item: CardItem): void {
   isModalOpen.value = true;
-  productToDelete.value = product;
+  itemToDelete.value = item;
 }
 
 function getStockClass(stock: number): string{
   if(stock === 0) return 'tag is-danger'
   if(stock <= STOCK_LOW_LIMIT) return 'tag is-warning'
-  return 'tag';
+  return 'tag is-white';
 }
 
 function getLabelClass(stock: number): string{
-  console.log(stock);
   if(stock === 0) return 'RUPTURE'
   if(stock <= STOCK_LOW_LIMIT) return `${stock} ⚠`
   return `${stock}`;
 }
+
 async function deleteProduct(id: number | undefined) {
   try{
     if(id != null){
-      await axios.post(`http://localhost:8000/api/product/delete/${id}`);
-      await fetchProducts();
-      productToDelete.value = null;
+      if(props.type === 'product'){
+        await axios.delete(`http://localhost:8000/api/product/${id}`);
+      }else{
+        await axios.delete(`http://localhost:8000/api/service/${id}`);
+      }
+      await fetchItems();
+      itemToDelete.value = null;
       isModalOpen.value = false;
     }
   }catch(error){
@@ -75,41 +95,57 @@ async function deleteProduct(id: number | undefined) {
 }
 
 const filteredProducts = computed(() => {
-  return products.value.filter(product =>
-    product.title.toLowerCase().includes(searchedInput.value.toLowerCase()) ||
-    product.categories.some(category =>
-      category.toLowerCase().includes(searchedInput.value.toLowerCase())
+  return items.value.filter(item =>
+    item.title.toLowerCase().includes(searchedInput.value.trim().toLowerCase()) ||
+    item.categories.some(category =>
+      category.categoryName.trim().toLowerCase().includes(searchedInput.value.trim().toLowerCase())
     )
   )
 })
 
 onMounted(async () => {
   try{
-    const res = await axios.get<Product[]>('http://localhost:8000/api/products');
-    products.value = res.data;
+    if(props.type === 'product'){
+      const res = await axios.get<Product[]>('http://localhost:8000/api/products');
+      items.value = res.data;
+    }else{
+      const res = await axios.get<Service[]>('http://localhost:8000/api/services');
+      items.value = res.data;
+    }
   }catch(error){
-    console.error("Impossible de récupérer les produits: ", error)
+    console.error("Impossible de récupérer les produits ou services: ", error);
   }
 })
 </script>
 
 <template>
   <div class="container">
-    <h1 class="title is-1 has-text-centered">Gestion de nos produits</h1>
-    <div class="notification is-danger" v-if="productStockIsEmpty.length > 0 && showLowStockAlert">
-      <button class="delete" @click="showLowStockAlert= false"></button>
-      <strong>Éléments en rupture de stock : </strong>
-      <span>{{ lowStockProductTitles }}.</span>
-    </div>
+    <h1 class="title is-1 has-text-centered">
+      Gestion de nos {{props.type === 'product' ? 'produits' : 'services'}}
+    </h1>
+    <StockAlertNotification
+      :showLowStockAlert="showLowStockAlert"
+      :productStockIsEmpty="productStockIsEmpty"
+      :lowStockProductTitles="lowStockProductTitles"
+      @close="closeLowStockNotification"
+    />
     <div class="is-flex is-flex-direction-row is-justify-content-center">
       <div class="control has-icons-left is-flex-grow-1">
-        <input class="input is-medium" type="text" v-model="searchedInput" placeholder="Nom du produit" id="inputSearch"/>
+        <input
+          class="input is-medium"
+          type="text"
+          v-model="searchedInput"
+          :placeholder="props.type === 'product' ? 'Nom du produit' : 'Nom du service'"
+          id="inputSearch"/>
         <span class="icon is-small is-left">
           <i class="fas fa-search"></i>
         </span>
       </div>
-      <button class="button is-success is-medium ml-3" @click="openAddModal">Ajouter un produit</button>
+      <button class="button is-success is-medium ml-3" @click="openAddModal">
+        Ajouter un {{props.type === 'product' ? 'produit' : 'service'}}
+      </button>
     </div>
+    <h4 class="mt-1">Nombre d'éléments recherchés: {{filteredProducts.length}}</h4>
     <table class="table is-striped mt-5">
       <thead>
         <tr>
@@ -123,40 +159,42 @@ onMounted(async () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="product in filteredProducts" :key="product.id">
-          <td>{{product.title}}</td>
-          <td>{{product.description}}</td>
-          <td>{{product.price}}€</td>
+        <tr v-for="item in filteredProducts" :key="item.id">
+          <td>{{item.title}}</td>
+          <td>{{item.description}}</td>
+          <td>{{item.price}}€</td>
           <td>
-            <span :class="getStockClass(product.stock)">
-              {{getLabelClass(product.stock)}}
+            <span :class="getStockClass(item.stock)">
+              {{getLabelClass(item.stock)}}
             </span>
           </td>
-          <td><span class="tag is-white">{{product.categories.join(', ')}}</span></td>
-          <td><button class="button is-warning" @click="openEditModal(product)">Modifier</button></td>
-          <td><button class="button is-danger" @click="openDeleteModal(product)">Supprimer</button></td>
+          <td><span class="tag is-white">{{ item.categories.map(cat => cat.categoryName).join(', ') }}</span></td>
+          <td><button class="button is-warning" @click="openEditModal(item)">Modifier</button></td>
+          <td><button class="button is-danger" @click="openDeleteModal(item)">Supprimer</button></td>
         </tr>
       </tbody>
     </table>
   </div>
   <DeleteProductDialog
     :active="isModalOpen"
-    :product="productToDelete"
+    :item="itemToDelete"
     @close="isModalOpen = false"
-    @confirm="deleteProduct(productToDelete?.id)"
+    @confirm="deleteProduct(itemToDelete?.id)"
   />
 
   <AddProductDialog
     v-if="formMode === 'edit'"
-    :product="productToModify"
+    :item="itemToModify"
     :active="isAddProductModalOpen"
     :formMode="formMode"
+    :type="props.type"
     @close="closeAddModal"
   />
   <AddProductDialog
     v-else
     :active="isAddProductModalOpen"
-    :product="product"
+    :item="item"
+    :type="props.type"
     :formMode="formMode"
     @close="closeAddModal"
   />
