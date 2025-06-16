@@ -30,17 +30,17 @@
         </button>
       </div>
 
-      <div v-if="images.length > 1" class="has-text-centered mt-2">
-        <span
-          v-for="(index) in images.length"
-          :key="index"
-          class="tag mx-1"
-          :class="{ 'is-primary': index === current, 'is-light': index !== current }"
-          @click="goTo(index)"
-        >
-          {{ index + 1 }}
-        </span>
-      </div>
+<!--      <div v-if="images.length > 1" class="has-text-centered mt-2">-->
+<!--        <span-->
+<!--          v-for="(index) in images.length"-->
+<!--          :key="index"-->
+<!--          class="tag mx-1"-->
+<!--          :class="{ 'is-primary': index === current, 'is-light': index !== current }"-->
+<!--          @click="goTo(index)"-->
+<!--        >-->
+<!--          {{ index + 1 }}-->
+<!--        </span>-->
+<!--      </div>-->
     </div>
   </div>
 </template>

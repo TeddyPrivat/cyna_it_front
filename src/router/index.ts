@@ -5,7 +5,7 @@ import User from "../components/User.vue";
 import SignIn from '@/components/auth/SignIn.vue';
 
 import Login from "@/views/auth/Login.vue";
-import ListItems from '@/components/Products/ListItems.vue';
+// import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
 import SignUp from '@/views/auth/SignUp.vue';
 import Logout from '@/views/auth/Logout.vue'

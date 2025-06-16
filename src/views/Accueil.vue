@@ -42,14 +42,14 @@ onMounted(async () => {
     </div>
     <Grid :items="myList" :columns="2">
       <template #default="{ item }">
-        <div class="box has-text-centered">
+        <div class="box has-text-centered"><x></x>
           <a href='produit/{{index}}'>{{ item }}</a>
         </div>
       </template>
     </Grid>
 <!--    <div v-if="isLoading">Chargement des produits...</div>-->
-    <div class="title is-4 mt-6">Les produits du momemt</div>
-    <Carousel :content-type="imageListType" :images="imageList"/>
+<!--    <div class="title is-4 mt-6">Les produits du momemt</div>-->
+<!--    <Carousel :content-type="imageListType" :images="imageList"/>-->
   </main>
 </template>
 
