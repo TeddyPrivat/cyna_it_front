@@ -13,6 +13,7 @@ import CGU from '@/views/FooterViews/CGU.vue';
 import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
 import AddProductDialog from '@/components/AddProductDialog.vue';
+import NotFound from '@/views/NotFound.vue';
 import Accueil from '@/views/Accueil.vue'
 
 const router = createRouter({
@@ -95,6 +96,11 @@ const router = createRouter({
       path: '/dashboard/product/add',
       name: 'DashboardAppProduct',
       component: AddProductDialog
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: NotFound
     }
   ],
   scrollBehavior(to, from, savedPosition) { // Permet d'arriver en haut de chaque page avec le scroll
