@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, defineProps } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const defaultImage = new URL('@/assets/cyna_logo.png', import.meta.url).href
 

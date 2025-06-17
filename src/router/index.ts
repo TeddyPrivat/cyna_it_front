@@ -16,6 +16,7 @@ import AddProductDialog from '@/components/AddProductDialog.vue';
 import NotFound from '@/views/NotFound.vue';
 import Accueil from '@/views/Accueil.vue';
 import SupportForm from '@/components/SupportForm.vue'
+import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
