@@ -11,6 +11,11 @@ const router = useRouter();
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
+const showForgotPassword = ref(false);
+const forgotEmail = ref('');
+const forgotError = ref('');
+const forgotSuccess = ref('');
+
 
 
 const handleLogin = async () => {
@@ -27,6 +32,34 @@ const handleLogin = async () => {
     errorMessage.value = 'Erreur de connexion, vérifier votre email et mot de passe';
   }
 };
+
+const handleForgotPassword = async () => {
+  forgotError.value = '';
+  forgotSuccess.value = '';
+  try {
+    const response = await fetch('http://localhost:8000/api/forgot-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: forgotEmail.value }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Une erreur est survenue');
+    }
+
+    forgotSuccess.value = 'Un nouveau mot de passe a été envoyé à votre adresse email.';
+    forgotEmail.value = '';
+    setTimeout(() => (showForgotPassword.value = false), 2000);
+  } catch (err: any) {
+    forgotError.value = err.message;
+  }
+};
+
+
 </script>
 
 <template>
@@ -36,7 +69,7 @@ const handleLogin = async () => {
   <div class="container is-flex is-justify-content-center is-align-items-center" style="height: 100vh;">
     <div class="card mb-6">
       <div class="columns is-vcentered">
-        <div class="column">
+        <div class="column ml-2">
           <figure class="image">
             <img src="../../assets/cyna_logo.png" class="has-rounded-corners" alt="logo de l'entreprise Cyna"/>
           </figure>
@@ -47,14 +80,47 @@ const handleLogin = async () => {
             v-model:model-value-password="password"
             :error-message="errorMessage"
           />
-          <div class="mt-2 ml-3">
-            <a href="#" class="is-georama">Mot de passe oublié</a>
+          <!-- Mot de passe oublié -->
+          <div class="mt-4 ml-3">
+            <a @click="showForgotPassword = true" class="is-georama has-text-link is-clickable">
+              Mot de passe oublié ?
+            </a>
           </div>
+
+          <!-- Modal de récupération -->
+          <div v-if="showForgotPassword" class="modal is-active">
+            <div class="modal-background" @click="showForgotPassword = false"></div>
+            <div class="modal-content">
+              <div class="box">
+                <h2 class="title is-5">Réinitialiser le mot de passe</h2>
+                <div class="field">
+                  <label class="label">Email</label>
+                  <div class="control">
+                    <input class="input" type="email" v-model="forgotEmail" placeholder="Entrez votre adresse email" />
+                  </div>
+                </div>
+                <div class="field is-grouped is-grouped-right">
+                  <div class="control">
+                    <button class="button is-link" @click="handleForgotPassword">Envoyer</button>
+                  </div>
+                  <div class="control">
+                    <button class="button" @click="showForgotPassword = false">Annuler</button>
+                  </div>
+                </div>
+                <p class="has-text-danger mt-2" v-if="forgotError">{{ forgotError }}</p>
+                <p class="has-text-success mt-2" v-if="forgotSuccess">{{ forgotSuccess }}</p>
+              </div>
+            </div>
+          </div>
+
           <div class="field is-grouped is-grouped-centered">
             <div class="control mt-5">
               <button @click="handleLogin" class="button is-rounded is-medium is-purple is-georama">
                 Se connecter
               </button>
+              <div class="mt-2 mb-2 has-text-centered">
+                <a href="/signup" class="is-georama">Créer un compte</a>
+              </div>
             </div>
           </div>
         </div>

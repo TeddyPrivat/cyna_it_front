@@ -31,7 +31,7 @@ const handleSignup = async () => {
 </script>
 
 <template>
-  <div class="container ml-5">
+  <div class="container ml-5 mr-5">
     <div v-if="errorMessage" class="notification is-danger">
       {{ errorMessage }}
     </div>
@@ -78,9 +78,12 @@ const handleSignup = async () => {
 
     <div class="field is-grouped is-grouped-centered">
       <div class="control mt-2">
-        <button @click="handleSignup" type="button" class="button is-medium is-rounded is-purple is-georama mb-5">
+        <button @click="handleSignup" type="button" class="button is-medium is-rounded is-purple is-georama">
           S'inscrire
         </button>
+        <div class="mb-2 has-text-centered">
+          <a href="/login" class="is-georama">Se connecter</a>
+        </div>
       </div>
     </div>
   </div>

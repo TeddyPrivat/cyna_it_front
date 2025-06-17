@@ -15,7 +15,7 @@ import SignUpFields from "@/components/auth/SignUpFields.vue";
             <img src="../../assets/cyna_logo.png" class="has-rounded-corners" alt="logo de l'entreprise Cyna"/>
           </figure>
         </div>
-        <div class="column mt-6">
+        <div class="column mt-6 mr-5">
           <sign-up-fields/>
         </div>
       </div>
