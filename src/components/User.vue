@@ -32,7 +32,12 @@ const users = ref<User[]>()
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:8000/api/users')
+    const token = localStorage.getItem('jwt')
+    const res = await axios.get('http://localhost:8000/api/users',{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     users.value = res.data
   } catch (error) {
     console.error('Erreur lors du chargement des utilisateurs:', error)

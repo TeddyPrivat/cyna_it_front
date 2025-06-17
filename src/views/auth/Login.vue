@@ -1,5 +1,63 @@
+<!--views\auth\Login.vue-->
 <script setup lang="ts">
-import LoginFields from "@/components/auth/LoginFields.vue";
+import { ref } from 'vue';
+import LoginFields from '@/components/auth/LoginFields.vue';
+import { login } from '@/services/auth';
+import { forgetPassword } from '@/services/auth';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
+const router = useRouter();
+const email = ref('');
+const password = ref('');
+const errorMessage = ref('');
+const showForgotPassword = ref(false);
+const forgotEmail = ref('');
+const forgotError = ref('');
+const forgotSuccess = ref('');
+
+const isValidEmail = (email: string): boolean => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+};
+
+
+const handleLogin = async () => {
+  try {
+    const token = await login(email.value, password.value);
+    localStorage.setItem('jwt', token);
+    console.log('Connexion réussie !');
+    await userStore.initializeUser();
+
+    router.push('/')
+    console.log(token)
+  } catch (err) {
+    console.error(err);
+    errorMessage.value = 'Erreur de connexion, vérifier votre email et mot de passe';
+  }
+};
+
+const handleForgotPassword = async () => {
+  forgotError.value = '';
+  forgotSuccess.value = '';
+
+  if (!isValidEmail(forgotEmail.value)) {
+    forgotError.value = 'Veuillez entrer un e-mail valide exemeple@exemple.com';
+    return;
+  }
+
+  try {
+    await forgetPassword(forgotEmail.value);
+    forgotSuccess.value = 'Un nouveau mot de passe a été envoyé à votre adresse email.';
+    forgotEmail.value = '';
+    setTimeout(() => (showForgotPassword.value = false), 2000);
+  } catch (err: any) {
+    forgotError.value = err.message;
+  }
+};
+
+
 </script>
 
 <template>
@@ -9,21 +67,58 @@ import LoginFields from "@/components/auth/LoginFields.vue";
   <div class="container is-flex is-justify-content-center is-align-items-center" style="height: 100vh;">
     <div class="card mb-6">
       <div class="columns is-vcentered">
-        <div class="column">
+        <div class="column ml-2">
           <figure class="image">
             <img src="../../assets/cyna_logo.png" class="has-rounded-corners" alt="logo de l'entreprise Cyna"/>
           </figure>
         </div>
         <div class="column">
-          <login-fields/>
-          <div class="mt-2 ml-1">
-            <a href="#" class="is-georama">Mot de passe oublié</a>
+          <LoginFields
+            v-model:model-value-email="email"
+            v-model:model-value-password="password"
+            :error-message="errorMessage"
+          />
+          <!-- Mot de passe oublié -->
+          <div class="mt-4 ml-3">
+            <a @click="showForgotPassword = true" class="is-georama has-text-link is-clickable">
+              Mot de passe oublié ?
+            </a>
           </div>
+
+          <!-- Modal de récupération -->
+          <div v-if="showForgotPassword" class="modal is-active">
+            <div class="modal-background" @click="showForgotPassword = false"></div>
+            <div class="modal-content">
+              <div class="box">
+                <h2 class="title is-5">Réinitialiser le mot de passe</h2>
+                <div class="field">
+                  <label class="label">Email</label>
+                  <div class="control">
+                    <input class="input" type="email" v-model="forgotEmail" placeholder="Entrez votre adresse email" />
+                  </div>
+                </div>
+                <div class="field is-grouped is-grouped-right">
+                  <div class="control">
+                    <button class="button is-link" @click="handleForgotPassword">Envoyer</button>
+                  </div>
+                  <div class="control">
+                    <button class="button" @click="showForgotPassword = false">Annuler</button>
+                  </div>
+                </div>
+                <p class="has-text-danger mt-2" v-if="forgotError">{{ forgotError }}</p>
+                <p class="has-text-success mt-2" v-if="forgotSuccess">{{ forgotSuccess }}</p>
+              </div>
+            </div>
+          </div>
+
           <div class="field is-grouped is-grouped-centered">
             <div class="control mt-5">
-              <button type="submit" class="button is-rounded is-medium is-purple is-georama">
+              <button @click="handleLogin" class="button is-rounded is-medium is-purple is-georama">
                 Se connecter
               </button>
+              <div class="mt-2 mb-2 has-text-centered">
+                <a href="/signup" class="is-georama">Créer un compte</a>
+              </div>
             </div>
           </div>
         </div>
