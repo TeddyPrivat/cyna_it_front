@@ -3,6 +3,7 @@
 import { ref } from 'vue';
 import LoginFields from '@/components/auth/LoginFields.vue';
 import { login } from '@/services/auth';
+import { forgetPassword } from '@/services/auth';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 
@@ -16,6 +17,10 @@ const forgotEmail = ref('');
 const forgotError = ref('');
 const forgotSuccess = ref('');
 
+const isValidEmail = (email: string): boolean => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+};
 
 
 const handleLogin = async () => {
@@ -36,21 +41,14 @@ const handleLogin = async () => {
 const handleForgotPassword = async () => {
   forgotError.value = '';
   forgotSuccess.value = '';
+
+  if (!isValidEmail(forgotEmail.value)) {
+    forgotError.value = 'Veuillez entrer un e-mail valide exemeple@exemple.com';
+    return;
+  }
+
   try {
-    const response = await fetch('http://localhost:8000/api/forgot-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email: forgotEmail.value }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || 'Une erreur est survenue');
-    }
-
+    await forgetPassword(forgotEmail.value);
     forgotSuccess.value = 'Un nouveau mot de passe a été envoyé à votre adresse email.';
     forgotEmail.value = '';
     setTimeout(() => (showForgotPassword.value = false), 2000);

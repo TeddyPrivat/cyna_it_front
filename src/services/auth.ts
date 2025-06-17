@@ -1,5 +1,7 @@
 // services/auth.ts
 import axios from 'axios';
+import type { ForgotPasswordResponse } from '@/types/auth';
+
 
 export async function login(username: string, password: string) {
   // console.log("username", username)
@@ -40,3 +42,28 @@ export async function signup(
 
   return await response.json();
 }
+
+export async function forgetPassword(email: string): Promise<ForgotPasswordResponse> {
+
+  const response = await fetch(`http://localhost:8000/api/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  const text = await response.text();
+  let data;
+
+  try {
+    data = await JSON.parse(text);
+  } catch {
+    throw new Error('Réponse invalide du serveur');
+  }
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Erreur inconnue');
+  }
+
+  return data;
+}
+
