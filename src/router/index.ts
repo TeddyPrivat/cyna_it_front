@@ -9,6 +9,7 @@ import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
 import AddProductDialog from '@/components/AddProductDialog.vue'
 import SupportForm from '@/components/SupportForm.vue'
+import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -67,13 +68,14 @@ const router = createRouter({
       component: DashboardProducts,
       props: {
         type: 'product'
-      }
+      },
+      meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
       path: '/dashboard/product/add',
       name: 'DashboardAppProduct',
       component: AddProductDialog,
-
+      meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
       path: '/dashboard/services',
@@ -81,12 +83,19 @@ const router = createRouter({
       component: DashboardProducts,
       props: {
         type: 'service'
-      }
+      },
+      meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
       path: '/support',
       name: 'Support',
       component: SupportForm
+    },
+    {
+      path: "/dashboard/support/message",
+      name: 'DashboardMessageSupport',
+      component: DashboardSupportMessages,
+      meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     }
   ],
   scrollBehavior(to, from, savedPosition) { // Permet d'arriver en haut de chaque page avec le scroll

@@ -133,7 +133,7 @@ onMounted(async () => {
       <div class="control has-icons-left is-flex-grow-1">
         <input
           class="input is-medium"
-          type="text"
+          type="search"
           v-model="searchedInput"
           :placeholder="props.type === 'product' ? 'Nom du produit' : 'Nom du service'"
           id="inputSearch"/>
