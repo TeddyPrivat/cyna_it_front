@@ -6,6 +6,7 @@ import { login } from '@/services/auth';
 import { forgetPassword } from '@/services/auth';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
+import { decodeAndStoreJwt } from '@/services/jwt'
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -26,12 +27,10 @@ const isValidEmail = (email: string): boolean => {
 const handleLogin = async () => {
   try {
     const token = await login(email.value, password.value);
-    localStorage.setItem('jwt', token);
+    decodeAndStoreJwt(token);
     console.log('Connexion réussie !');
     await userStore.initializeUser();
-
-    router.push('/')
-    console.log(token)
+    router.push('/');
   } catch (err) {
     console.error(err);
     errorMessage.value = 'Erreur de connexion, vérifier votre email et mot de passe';
