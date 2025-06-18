@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from 'vue'
-import axios from 'axios'
-import type { Category } from '@/types/Category.ts'
+import {onMounted, ref, watch} from 'vue';
+import api from '@/services/api';
+import type { Category } from '@/types/Category.ts';
 import type { CardItem } from "@/types/CardItem.ts";
 
 const emit = defineEmits(['formSubmitted']);
@@ -22,7 +22,7 @@ const form = ref<CardItem>({
 });
 const categories = ref<Category[]>([]);
 const fetchCategories = async () => {
-  const response = await axios.get("http://localhost:8000/api/categories");
+  const response = await api.get("/api/categories");
   categories.value = response.data;
 }
 
@@ -43,17 +43,11 @@ const submitForm = async () => {
       categories: form.value.categories.map((id) => ({ id }))
     };
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    };
-
     if (props.formMode === "create") {
       if (props.type === 'product') {
-        await axios.post('http://localhost:8000/api/product', payload, config);
+        await api.post('/api/product', payload);
       } else {
-        await axios.post('http://localhost:8000/api/service', payload, config);
+        await api.post('/api/service', payload);
       }
     } else { // Modification
       const itemId = props.item?.id;
@@ -62,8 +56,8 @@ const submitForm = async () => {
         return;
       }
 
-      const url = `http://localhost:8000/api/${props.type}/${itemId}`;
-      await axios.put(url, payload, config);
+      const url = `/${props.type}/${itemId}`;
+      await api.put(url, payload);
     }
 
     emit("formSubmitted");

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios from 'axios'
+import api from '@/services/api'
 import type { MessageSupport } from '@/types/MessageSupport.ts'
 import CardMessage from '@/components/CardMessage.vue'
 import { computed, onMounted, ref } from 'vue'
@@ -17,7 +17,7 @@ const filteredList = computed(() => { //computed qui permet d'afficher dynamique
 async function deleteSupportMessage(message: MessageSupport) {
   const id = message.id;
   try{
-    await axios.delete(`http://localhost:8000/api/support/message/${id}`);
+    await api.delete(`/api/support/message/${id}`);
     messages.value = messages.value.filter(m => m.id !== id);
     console.log("Le message de support a bien été supprimé.");
   }catch(error){
@@ -26,7 +26,7 @@ async function deleteSupportMessage(message: MessageSupport) {
 }
 onMounted(async () => {
   try{
-    const response = await axios.get<MessageSupport[]>("http://localhost:8000/api/support/message");
+    const response = await api.get<MessageSupport[]>("/api/support/message");
     messages.value = response.data;
     console.log(messages.value);
     console.log("Les messages ont bien été récupérés");

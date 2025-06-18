@@ -16,7 +16,7 @@ export const useUserStore = defineStore('user', () => {
 
     const payload = getPayloadFromToken(storedToken);
     if (payload?.id) {
-      const userData = await fetchUserData(payload.id, storedToken);
+      const userData = await fetchUserData(payload.id);
       if (userData) {
         user.value = userData;
         isLoggedIn.value = true;
@@ -29,6 +29,7 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn.value = false;
     token.value = null;
     localStorage.removeItem('jwt');
+    localStorage.removeItem('roles');
   }
 
   return {

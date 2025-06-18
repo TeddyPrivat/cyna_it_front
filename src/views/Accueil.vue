@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Carousel from '@/components/Carousel/Carousel.vue'
 import Grid from '@/components/Carousel/Grid.vue'
-import axios from 'axios'
+import api from '@/services/api'
 import type { Product } from '@/types/Product'
 import {onMounted, ref} from 'vue'
 import ModalSupportMessage from '@/components/ModalSupportMessage.vue'
@@ -21,7 +21,7 @@ function isSupportFormSubmitted(){
 }
 onMounted(async () => {
   try {
-    const res = await axios.get<Product[]>('http://127.0.0.1:8000/api/products')
+    const res = await api.get<Product[]>('/api/products')
     products.value = res.data
     // console.log(products.value)
 

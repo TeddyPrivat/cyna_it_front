@@ -17,7 +17,6 @@ function closeDropdownOnClickOutside(event: MouseEvent) {
 }
 
 onMounted(() => {
-  // Initialise l'utilisateur si besoin
   userStore.initializeUser();
   document.addEventListener("click", closeDropdownOnClickOutside);
 });

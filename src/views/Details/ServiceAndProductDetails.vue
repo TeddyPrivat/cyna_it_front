@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import api from '@/services/api';
 import type { Service } from '@/types/Service.ts'
 import type { Product } from "@/types/Product.ts";
 
@@ -15,10 +15,10 @@ const props = defineProps<{
 onMounted(async () => {
   try{
     if(props.type === 'product'){
-     const res = await axios.get(`http://localhost:8000/api/product/${props.id}`);
+     const res = await api.get(`/api/product/${props.id}`);
      item.value = res.data;
     }else if(props.type === 'service'){
-     const res = await axios.get(`http://localhost:8000/api/service/${props.id}`);
+     const res = await api.get(`/api/service/${props.id}`);
      item.value = res.data;
     }
   }catch(error){

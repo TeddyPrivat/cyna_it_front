@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
+import api from '@/services/api'
 import { onMounted, ref } from 'vue'
 
 interface User {
@@ -32,12 +32,7 @@ const users = ref<User[]>()
 
 onMounted(async () => {
   try {
-    const token = localStorage.getItem('jwt')
-    const res = await axios.get('http://localhost:8000/api/users',{
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    const res = await api.get('/api/users')
     users.value = res.data
   } catch (error) {
     console.error('Erreur lors du chargement des utilisateurs:', error)

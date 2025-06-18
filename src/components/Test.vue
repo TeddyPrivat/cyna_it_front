@@ -8,13 +8,13 @@
 
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import axios from "axios";
+import api from "@/services/api";
 
 const message = ref('Chargement...');
 
 onMounted(async () => {
   try{
-    const res = await axios.get('http://localhost:8000/api/test');
+    const res = await api.get('/api/test');
     message.value = res.data.message;
   }catch(error){
     console.log(error);

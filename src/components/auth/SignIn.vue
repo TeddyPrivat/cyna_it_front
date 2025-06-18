@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 
 const firstname = ref('');
 const lastname = ref('');
 const email = ref('');
 const password = ref('');
+const message = ref('');
 
 const submitForm = async () => {
   try {
@@ -16,25 +17,18 @@ const submitForm = async () => {
       password: password.value,
     });
 
-    const response = await axios.post(`http://localhost:8000/api/signin?${queryParams.toString()}`);
+    const response = await api.post(`/api/signin?${queryParams.toString()}`);
     if (response.status === 200) {
-      // L'inscription a réussi
       console.log('Inscription réussie:', response.data);
-      // Vous pouvez rediriger l'utilisateur ou afficher un message de succès ici
     } else {
-      // Gérer les autres codes d'état si nécessaire
       console.error('Erreur lors de l\'inscription:', response.statusText);
     }
   } catch (error: any) {
     if (error.response) {
-      // La requête a été faite et le serveur a répondu avec un code d'état
-      // qui sort de la plage des 2xx
       message.value = error.response.data.message || 'Erreur lors de l\'inscription';
     } else if (error.request) {
-      // La requête a été faite mais aucune réponse n'a été reçue
       message.value = 'Aucune réponse du serveur';
     } else {
-      // Quelque chose s'est produit lors de la configuration de la requête
       message.value = 'Erreur: ' + error.message;
     }
   }

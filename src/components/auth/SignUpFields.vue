@@ -5,9 +5,9 @@ import { ref } from 'vue'
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
-const nom = ref('');
-const prenom = ref('');
 const confirmPassword = ref('');
+const firstname = ref('');
+const lastname = ref('');
 
 const handleSignup = async () => {
   try {

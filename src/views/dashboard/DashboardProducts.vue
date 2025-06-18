@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import axios from 'axios';
+import api from '@/services/api';
 import type { Product } from '@/types/Product.ts';
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue';
 import DeleteProductDialog from '@/components/DeleteProductDialog.vue';
 import AddProductDialog from '@/components/AddProductDialog.vue';
-import StockAlertNotification from '@/components/StockAlertNotification.vue'
+import StockAlertNotification from '@/components/StockAlertNotification.vue';
 import type {CardItem} from "@/types/CardItem.ts";
 import type {Service} from "@/types/Service.ts";
 
@@ -47,10 +47,10 @@ function openEditModal(item: CardItem){
 
 const fetchItems = async () => {
   if(props.type === 'product'){
-    const res = await axios.get<Product[]>('http://localhost:8000/api/products');
+    const res = await api.get<Product[]>('/api/products');
     items.value = res.data;
   }else{
-    const res = await axios.get<Product[]>('http://localhost:8000/api/services');
+    const res = await api.get<Product[]>('/api/services');
     items.value = res.data;
   }
 };
@@ -81,9 +81,9 @@ async function deleteProduct(id: number | undefined) {
   try{
     if(id != null){
       if(props.type === 'product'){
-        await axios.delete(`http://localhost:8000/api/product/${id}`);
+        await api.delete(`/api/product/${id}`);
       }else{
-        await axios.delete(`http://localhost:8000/api/service/${id}`);
+        await api.delete(`/api/service/${id}`);
       }
       await fetchItems();
       itemToDelete.value = null;
@@ -106,10 +106,10 @@ const filteredProducts = computed(() => {
 onMounted(async () => {
   try{
     if(props.type === 'product'){
-      const res = await axios.get<Product[]>('http://localhost:8000/api/products');
+      const res = await api.get<Product[]>('/api/products');
       items.value = res.data;
     }else{
-      const res = await axios.get<Service[]>('http://localhost:8000/api/services');
+      const res = await api.get<Service[]>('/api/services');
       items.value = res.data;
     }
   }catch(error){

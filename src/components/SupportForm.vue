@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import axios from "axios";
+import api from "@/services/api";
 
 const lastname = ref<string>("");
 const firstname = ref<string>("");
@@ -16,7 +16,7 @@ const submitForm = async () => {
     message: message.value,
   }
   try{
-    await axios.post("http://localhost:8000/api/support/message", payload);
+    await api.post("/api/support/message", payload);
     emit('submitted');
     console.log("Message envoyé !");
   }catch(error){

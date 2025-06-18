@@ -1,12 +1,8 @@
-import axios from 'axios';
+import api from '@/services/api'
 
-export async function fetchUser(id: number, token: string) {
+export async function fetchUser(id: number) {
   try {
-    const response = await axios.get(`http://localhost:8000/api/users/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const response = await api.get(`/api/users/${id}`);
     return response.data;
   } catch (error) {
     console.error("Erreur lors de la récupération de l'utilisateur", error);
