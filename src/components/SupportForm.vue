@@ -7,6 +7,7 @@ const firstname = ref<string>("");
 const email = ref<string>("");
 const message = ref<string>("");
 
+const emit = defineEmits(["submitted"])
 const submitForm = async () => {
   const payload = {
     lastname: lastname.value,
@@ -16,6 +17,7 @@ const submitForm = async () => {
   }
   try{
     await axios.post("http://localhost:8000/api/support/message", payload);
+    emit('submitted');
     console.log("Message envoyé !");
   }catch(error){
     console.log("Erreur lors de l'envoi du message : " + error);

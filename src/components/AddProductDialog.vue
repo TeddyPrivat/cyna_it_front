@@ -11,7 +11,7 @@ defineProps<{
 </script>
 
 <template>
- <div class="modal" :class="{ 'is-active': active }">
+ <div v-if="active" class="modal is-active">
    <div class="modal-background" @click="$emit('close')"></div>
    <div class="modal-content">
      <div class="card">

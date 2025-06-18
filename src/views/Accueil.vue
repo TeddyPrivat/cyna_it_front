@@ -4,15 +4,21 @@ import Grid from '@/components/Carousel/Grid.vue'
 import axios from 'axios'
 import type { Product } from '@/types/Product'
 import {onMounted, ref} from 'vue'
+import ModalSupportMessage from '@/components/ModalSupportMessage.vue'
 
 const products = ref<Product[]>([])
 const imageList = ref<{ src: string; description: string }[]>([])
 // en minuscule svp
 const imageListType = 'produits'
-
+const showModalSupport = ref<boolean>(false);
+const successSupport = ref<boolean>(false);
 const myList = ['Catégorie 1', 'Catégorie 2', 'Catégorie 3', 'Catégorie 4', 'Catégorie 5', 'Catégorie 5'];
 // const isLoading = ref(true)
 
+function isSupportFormSubmitted(){
+  showModalSupport.value = false;
+  successSupport.value = true;
+}
 onMounted(async () => {
   try {
     const res = await axios.get<Product[]>('http://127.0.0.1:8000/api/products')
@@ -37,7 +43,7 @@ onMounted(async () => {
 <!--    <div v-if="isLoading">Chargement des produits...</div>-->
     <Carousel :content-type="imageListType" :images="imageList"/>
     <div class="title is-4 mt-6">Texte fixe bonzour les amis, pour faire les annonces depuis le back office</div>
-    <div class="title is-6 mt-6 box has-background-light">
+    <div class="title is-6 mt-6 box">
       <p>Liste des catégories</p><a class="subtitle is-6" href="#">Voir tout</a>
     </div>
     <Grid :items="myList" :columns="2">
@@ -50,9 +56,22 @@ onMounted(async () => {
 <!--    <div v-if="isLoading">Chargement des produits...</div>-->
 <!--    <div class="title is-4 mt-6">Les produits du momemt</div>-->
 <!--    <Carousel :content-type="imageListType" :images="imageList"/>-->
+    <div class="is-flex is-justify-content-center mt-5">
+      <button class="button is-purple is-large" @click="showModalSupport = true">Faire une demande de support</button>
+      <ModalSupportMessage @close="showModalSupport = false" @submitted="isSupportFormSubmitted" :show="showModalSupport"/>
+    </div>
+    <div v-if="successSupport">
+      <div class="notification is-success mt-5">
+        <button class="delete" @click="successSupport = false"></button>
+        <p class="has-text-centered">Votre demande de support a bien été prise en compte, notre équipe reviendra vers vous dès que possible.</p>
+      </div>
+    </div>
   </main>
 </template>
 
 <style scoped>
 /* Ajoute du style si besoin */
+.is-purple{
+  background-color: #7200ff;
+}
 </style>
