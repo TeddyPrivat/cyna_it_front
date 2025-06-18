@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import api from "@/services/api";
+import { onMounted, ref } from 'vue'
+import api from '@/services/api'
+import { useUserStore } from '@/stores/user.ts'
 
-const lastname = ref<string>("");
-const firstname = ref<string>("");
-const email = ref<string>("");
-const message = ref<string>("");
+const lastname = ref<string>('')
+const firstname = ref<string>('')
+const email = ref<string>('')
+const message = ref<string>('')
 
-const emit = defineEmits(["submitted"])
+const userStore = useUserStore()
+const isLogged = ref<boolean>(false)
+const emit = defineEmits(['submitted'])
 const submitForm = async () => {
   const payload = {
     lastname: lastname.value,
@@ -15,14 +18,22 @@ const submitForm = async () => {
     email: email.value,
     message: message.value,
   }
-  try{
-    await api.post("/api/support/message", payload);
-    emit('submitted');
-    console.log("Message envoyé !");
-  }catch(error){
-    console.log("Erreur lors de l'envoi du message : " + error);
+  try {
+    await api.post('/api/support/message', payload)
+    emit('submitted')
+    console.log('Message envoyé !')
+  } catch (error) {
+    console.log("Erreur lors de l'envoi du message : " + error)
   }
 }
+onMounted(() => {
+  if (userStore.isLoggedIn && userStore.user) {
+    isLogged.value = true
+    firstname.value = userStore.user.firstname
+    lastname.value = userStore.user.lastname
+    email.value = userStore.user.email
+  }
+})
 </script>
 
 <template>
@@ -32,17 +43,48 @@ const submitForm = async () => {
       <div class="field">
         <label class="label" for="nom">Nom</label>
         <div class="is-flex is-align-items-center is-justify-content-start is-column-gap-2">
-          <input class="input" type="text" placeholder="Votre nom" id="nom" v-model="lastname" required/>
-          <input class="input" type="text" placeholder="Votre prénom" v-model="firstname" required/>
+          <input
+            id="nom"
+            v-model="lastname"
+            :readonly="isLogged"
+            class="input"
+            placeholder="Votre nom"
+            required
+            type="text"
+          />
+          <input
+            v-model="firstname"
+            :readonly="isLogged"
+            class="input"
+            placeholder="Votre prénom"
+            required
+            type="text"
+          />
         </div>
       </div>
       <div class="field">
         <label class="label" for="email">Email</label>
-      <input class="input" type="email" placeholder="Votre email" id="email" v-model="email" required/>
+        <input
+          id="email"
+          v-model="email"
+          :readonly="isLogged"
+          class="input"
+          placeholder="Votre email"
+          required
+          type="email"
+        />
       </div>
       <div class="field">
         <label class="label" for="message">Message</label>
-        <textarea class="textarea" type="text" placeholder="Votre message..." id="message" v-model="message" @keyup.enter="submitForm" required/>
+        <textarea
+          id="message"
+          v-model="message"
+          class="textarea"
+          placeholder="Votre message..."
+          required
+          type="text"
+          @keyup.enter="submitForm"
+        />
       </div>
       <div class="is-flex is-justify-content-center mt-5">
         <button class="button" type="submit">Soumettre la demande de support</button>
@@ -52,10 +94,11 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
-.button{
+.button {
   background-color: #7200ff;
 }
-.title{
+
+.title {
   color: #7200ff;
 }
 </style>

@@ -1,74 +1,78 @@
 <!--views\auth\Login.vue-->
 <script setup lang="ts">
-import { ref } from 'vue';
-import LoginFields from '@/components/auth/LoginFields.vue';
-import { login } from '@/services/auth';
-import { forgetPassword } from '@/services/auth';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user';
+import { ref } from 'vue'
+import LoginFields from '@/components/auth/LoginFields.vue'
+import { login } from '@/services/auth'
+import { forgetPassword } from '@/services/auth'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 import { decodeAndStoreJwt } from '@/services/jwt'
 
-const userStore = useUserStore();
-const router = useRouter();
-const email = ref('');
-const password = ref('');
-const errorMessage = ref('');
-const showForgotPassword = ref(false);
-const forgotEmail = ref('');
-const forgotError = ref('');
-const forgotSuccess = ref('');
+const userStore = useUserStore()
+const router = useRouter()
+const email = ref('')
+const password = ref('')
+const errorMessage = ref('')
+const showForgotPassword = ref(false)
+const forgotEmail = ref('')
+const forgotError = ref('')
+const forgotSuccess = ref('')
 
 const isValidEmail = (email: string): boolean => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-};
-
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return regex.test(email)
+}
 
 const handleLogin = async () => {
   try {
-    const token = await login(email.value, password.value);
-    decodeAndStoreJwt(token);
-    console.log('Connexion réussie !');
-    await userStore.initializeUser();
-    router.push('/');
+    const token = await login(email.value, password.value)
+    decodeAndStoreJwt(token)
+    console.log('Connexion réussie !')
+    await userStore.initializeUser()
+    await router.push('/')
   } catch (err) {
-    console.error(err);
-    errorMessage.value = 'Erreur de connexion, vérifier votre email et mot de passe';
+    console.error(err)
+    errorMessage.value = 'Erreur de connexion, vérifier votre email et mot de passe'
   }
-};
+}
 
 const handleForgotPassword = async () => {
-  forgotError.value = '';
-  forgotSuccess.value = '';
+  forgotError.value = ''
+  forgotSuccess.value = ''
 
   if (!isValidEmail(forgotEmail.value)) {
-    forgotError.value = 'Veuillez entrer un e-mail valide exemeple@exemple.com';
-    return;
+    forgotError.value = 'Veuillez entrer un e-mail valide exemeple@exemple.com'
+    return
   }
 
   try {
-    await forgetPassword(forgotEmail.value);
-    forgotSuccess.value = 'Un nouveau mot de passe a été envoyé à votre adresse email.';
-    forgotEmail.value = '';
-    setTimeout(() => (showForgotPassword.value = false), 2000);
+    await forgetPassword(forgotEmail.value)
+    forgotSuccess.value = 'Un nouveau mot de passe a été envoyé à votre adresse email.'
+    forgotEmail.value = ''
+    setTimeout(() => (showForgotPassword.value = false), 2000)
   } catch (err: any) {
-    forgotError.value = err.message;
+    forgotError.value = err.message
   }
-};
-
-
+}
 </script>
 
 <template>
   <div class="container is-flex is-centered is-justify-content-center">
     <h1 class="title is-purple-title is-georama is-1 mt-5 underline-hover">Se connecter</h1>
   </div>
-  <div class="container is-flex is-justify-content-center is-align-items-center" style="height: 100vh;">
+  <div
+    class="container is-flex is-justify-content-center is-align-items-center"
+    style="height: 100vh"
+  >
     <div class="card mb-6">
       <div class="columns is-vcentered">
         <div class="column ml-2">
           <figure class="image">
-            <img src="../../assets/cyna_logo.png" class="has-rounded-corners" alt="logo de l'entreprise Cyna"/>
+            <img
+              alt="logo de l'entreprise Cyna"
+              class="has-rounded-corners"
+              src="../../assets/cyna_logo.png"
+            />
           </figure>
         </div>
         <div class="column">
@@ -93,7 +97,12 @@ const handleForgotPassword = async () => {
                 <div class="field">
                   <label class="label">Email</label>
                   <div class="control">
-                    <input class="input" type="email" v-model="forgotEmail" placeholder="Entrez votre adresse email" />
+                    <input
+                      v-model="forgotEmail"
+                      class="input"
+                      placeholder="Entrez votre adresse email"
+                      type="email"
+                    />
                   </div>
                 </div>
                 <div class="field is-grouped is-grouped-right">
@@ -128,9 +137,10 @@ const handleForgotPassword = async () => {
 
 <style scoped>
 .is-georama {
-  font-family: "Georama", sans-serif;
+  font-family: 'Georama', sans-serif;
 }
-.is-purple-title{
+
+.is-purple-title {
   color: #7200ff;
 }
 .is-purple {
@@ -154,7 +164,7 @@ const handleForgotPassword = async () => {
 }
 
 .underline-hover::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 0;
   height: 5px;

@@ -1,42 +1,48 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useUserStore } from '@/stores/user';
+import { onMounted, ref } from 'vue'
+import { useUserStore } from '@/stores/user'
 
-const userStore = useUserStore();
-const isDropdownOpen = ref(false);
+const userStore = useUserStore()
+const isDropdownOpen = ref(false)
 
 function toggleDropdown() {
-  isDropdownOpen.value = !isDropdownOpen.value;
+  isDropdownOpen.value = !isDropdownOpen.value
 }
 
 function closeDropdownOnClickOutside(event: MouseEvent) {
-  const dropdown = document.getElementById("user-dropdown");
+  const dropdown = document.getElementById('user-dropdown')
   if (dropdown && !dropdown.contains(event.target as Node)) {
-    isDropdownOpen.value = false;
+    isDropdownOpen.value = false
   }
 }
 
 onMounted(() => {
-  userStore.initializeUser();
-  document.addEventListener("click", closeDropdownOnClickOutside);
-});
+  userStore.initializeUser()
+  document.addEventListener('click', closeDropdownOnClickOutside)
+})
 </script>
 
-
 <template>
-  <nav class="navbar is-purple p-4 is-georama " role="navigation" aria-label="main navigation">
-    <div class="navbar-brand ">
+  <nav aria-label="main navigation" class="navbar is-purple p-4 is-georama" role="navigation">
+    <div class="navbar-brand">
       <router-link to="/" class="navbar-item is-24x24">
-        <img src="@/assets/logo-cyna-white.svg" alt="Logo de l'entreprise" style="max-height: 3rem;">
+        <img
+          alt="Logo de l'entreprise"
+          src="@/assets/logo-cyna-white.svg"
+          style="max-height: 3rem"
+        />
       </router-link>
-      <router-link to="/" class="navbar-item has-text-white">
-        Produits et services
-      </router-link>
+      <router-link class="navbar-item has-text-white" to="/"> Produits et services</router-link>
     </div>
 
     <div class="navbar-end is-align-items-center">
       <div class="control has-icons-right custom-control">
-        <input class="input is-medium input-width" type="text" placeholder="Rechercher..." id="recherche"/>
+        <input
+          id="recherche"
+          class="input is-medium input-width"
+          placeholder="Rechercher..."
+          type="text"
+        />
         <span class="icon is-small is-right">
           <i class="fas fa-search"></i>
         </span>
@@ -44,7 +50,11 @@ onMounted(() => {
 
       <!-- Login/User info -->
       <div class="navbar-item is-flex is-align-items-center">
-        <router-link v-if="userStore.isLoggedIn && userStore.user" to="/" class="navbar-item has-text-white mr-2">
+        <router-link
+          v-if="userStore.isLoggedIn && userStore.user"
+          class="navbar-item has-text-white mr-2"
+          to="/"
+        >
           {{ userStore.user.firstname }}
         </router-link>
         <router-link v-else to="/login" class="navbar-item has-text-white mr-2">
@@ -52,7 +62,11 @@ onMounted(() => {
         </router-link>
 
         <!-- Icône + dropdown seulement si connecté -->
-        <div v-if="userStore.isLoggedIn" class="icon is-large has-text-white" @click.stop="toggleDropdown">
+        <div
+          v-if="userStore.isLoggedIn"
+          class="icon is-large has-text-white"
+          @click.stop="toggleDropdown"
+        >
           <i class="far fa-user-circle fa-2x"></i>
 
           <!-- Dropdown visible seulement si ouvert -->
@@ -60,13 +74,14 @@ onMounted(() => {
             v-if="isDropdownOpen"
             id="user-dropdown"
             class="navbar-item has-dropdown is-active"
-            style="position: relative;"
+            style="position: relative"
           >
-            <div class="navbar-dropdown is-right" style="position: absolute; top: 2.5rem; right: 0;">
-              <router-link to="/cart" class="navbar-item">Votre panier</router-link>
-              <router-link to="/settings" class="navbar-item">Paramètre</router-link>
+            <div class="navbar-dropdown is-right" style="position: absolute; top: 2.5rem; right: 0">
+              <router-link class="navbar-item" to="/cart">Mon panier</router-link>
+              <router-link class="navbar-item" to="/profile">Mon profil</router-link>
+              <router-link class="navbar-item" to="/settings">Paramètres</router-link>
               <hr class="navbar-divider" />
-              <router-link to="/logout" class="navbar-item ">Déconnexion</router-link>
+              <router-link class="navbar-item" to="/logout">Déconnexion</router-link>
             </div>
           </div>
         </div>
@@ -76,16 +91,13 @@ onMounted(() => {
           <i class="far fa-user-circle fa-2x"></i>
         </router-link>
       </div>
-
-
-
     </div>
   </nav>
 </template>
 
 <style scoped>
 .is-georama {
-  font-family: "Georama", sans-serif;
+  font-family: 'Georama', sans-serif;
 }
 
 .is-purple {
@@ -104,7 +116,8 @@ onMounted(() => {
   padding-top: 0;
   padding-bottom: 0;
 }
-.navbar-item:hover{
+
+.navbar-item:hover {
   background-color: #7200ff !important;
 }
 .navbar-item.is-active,
@@ -112,8 +125,6 @@ onMounted(() => {
   background-color: #7200ff !important;
   color: white !important;
 }
-
-
 
 .navbar-dropdown .navbar-item {
   background-color: #7200ff !important;
@@ -139,7 +150,5 @@ onMounted(() => {
 <script lang="ts">
 export default {
   name: 'Header',
-};
-
-
+}
 </script>

@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Test from '../components/Test.vue'
 import User from "../components/User.vue";
 
-import SignIn from '@/components/auth/SignIn.vue';
-
 import Login from "@/views/auth/Login.vue";
 // import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
@@ -18,29 +16,33 @@ import Unauthorized from '@/views/Unauthorized.vue'
 import Accueil from '@/views/Accueil.vue';
 import SupportForm from '@/components/SupportForm.vue'
 import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue'
+import FieldsProfile from '@/components/Profile/FieldsProfile.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path:"/",
-      name:'accueil',
-      component: Accueil
+      path: '/',
+      name: 'accueil',
+      component: Accueil,
     },
     {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
-    },{
+    },
+    {
       path: '/test',
-      component: Test
-    },{
+      component: Test,
+    },
+    {
       path: '/users',
-      component: User
-    }, {
+      component: User,
+    },
+    {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
     },
     {
       path: '/signup',
@@ -56,29 +58,29 @@ const router = createRouter({
       path: '/service/:id',
       name: 'service-details',
       component: ServiceAndProductDetails,
-      props: route => ({
+      props: (route) => ({
         id: Number(route.params.id),
-        type: 'service'
-      })
+        type: 'service',
+      }),
     },
     {
       path: '/product/:id',
       name: 'product-details',
       component: ServiceAndProductDetails,
-      props: route => ({
+      props: (route) => ({
         id: Number(route.params.id),
-        type: 'product'
-      })
+        type: 'product',
+      }),
     },
     {
       path: '/cgu',
       name: 'cgu',
-      component: CGU
+      component: CGU,
     },
     {
       path: '/mentions-legales',
       name: 'mentions-legales',
-      component: LegalsMentions
+      component: LegalsMentions,
     },
     {
       path: '/dashboard/products',
@@ -110,29 +112,35 @@ const router = createRouter({
       component: SupportForm
     },
     {
-      path: "/dashboard/support/message",
+      path: '/dashboard/support/message',
       name: 'DashboardMessageSupport',
       component: DashboardSupportMessages,
       meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
-      path: "/unauthorized",
+      path: '/unauthorized',
       name: 'Unauthorized',
       component: Unauthorized
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: FieldsProfile
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: NotFound
-    }
+    },
   ],
-  scrollBehavior(to, from, savedPosition) { // Permet d'arriver en haut de chaque page avec le scroll
+  scrollBehavior(to, from, savedPosition) {
+    // Permet d'arriver en haut de chaque page avec le scroll
     if (savedPosition) {
-      return savedPosition;
+      return savedPosition
     } else {
-      return { top: 0 };
+      return { top: 0 }
     }
-  }
+  },
 })
 router.beforeEach((to, from, next) => {
   const jwt = localStorage.getItem('jwt');
