@@ -1,7 +1,7 @@
 <template>
   <div class="not-found">
-    <h1>404 - Page non trouvée</h1>
-    <p>La page que vous recherchez n'existe pas.</p>
+    <h1>401 - Page non autorisée</h1>
+    <p>Vous n'avez pas les crédentiels pour accéder à cette page.</p>
     <router-link to="/">Retour à l'accueil</router-link>
   </div>
 </template>

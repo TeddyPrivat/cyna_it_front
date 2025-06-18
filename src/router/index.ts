@@ -14,6 +14,7 @@ import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
 import AddProductDialog from '@/components/AddProductDialog.vue';
 import NotFound from '@/views/NotFound.vue';
+import Unauthorized from '@/views/Unauthorized.vue'
 import Accueil from '@/views/Accueil.vue';
 import SupportForm from '@/components/SupportForm.vue'
 import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue'
@@ -21,11 +22,6 @@ import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'liste',
-    //   component: ListItems
-    // },
     {
       path:"/",
       name:'accueil',
@@ -41,12 +37,7 @@ const router = createRouter({
     },{
       path: '/users',
       component: User
-    },{
-
-      path:'/signin',
-      component: SignIn,
-
-    },{
+    }, {
       path: '/login',
       name: 'login',
       component: Login
@@ -125,6 +116,11 @@ const router = createRouter({
       meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
+      path: "/unauthorized",
+      name: 'Unauthorized',
+      component: Unauthorized
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: NotFound
@@ -139,25 +135,27 @@ const router = createRouter({
   }
 })
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = !!localStorage.getItem('token')
-  const userRoles: string[] = JSON.parse(localStorage.getItem('roles') || '[]')
+  const jwt = localStorage.getItem('jwt');
+  const isLoggedIn = !!jwt;
+
+  const userRoles: string[] = JSON.parse(localStorage.getItem('roles') || '[]');
 
   // Vérifie si la route nécessite une authentification
   if (to.meta.requiresAuth && !isLoggedIn) {
-    console.log(userRoles)
-    //return next('/login')
+    return next('/login');
   }
 
-  // Vérifie les rôles si spécifiés
+  // Vérifie les rôles requis pour cette route
   if (to.meta.roles && Array.isArray(to.meta.roles)) {
-    const hasAccess = to.meta.roles.some((role: string) => userRoles.includes(role))
+    const hasAccess = to.meta.roles.some((role: string) => userRoles.includes(role));
     if (!hasAccess) {
-      console.log(userRoles)
-     // return next('/login') // Crée cette page si nécessaire
+      console.warn('Accès refusé : rôles insuffisants', userRoles);
+      return next('/unauthorized');
     }
   }
 
-  return next()
-})
+  return next();
+});
+
 
 export default router

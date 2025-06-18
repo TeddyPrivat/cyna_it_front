@@ -27,7 +27,13 @@ const fetchCategories = async () => {
 }
 
 const submitForm = async () => {
-  try{
+  try {
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+      console.warn('Utilisateur non authentifié');
+      return;
+    }
+
     const payload = {
       id: form.value.id,
       title: form.value.title,
@@ -35,30 +41,33 @@ const submitForm = async () => {
       price: form.value.price,
       stock: form.value.stock,
       categories: form.value.categories.map((id) => ({ id }))
-    }
-    if(props.formMode === "create"){
-      if(props.type === 'product'){
-        await axios.post('http://localhost:8000/api/product', payload);
-      }else{
-        await axios.post('http://localhost:8000/api/service', payload);
+    };
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-    }else{ // Modification
-      if(props.type === 'product'){
-        const productId = props.item?.id;
-        if(!productId){
-          console.log("Produit non trouvé");
-        }
-        await axios.put(`http://localhost:8000/api/product/${productId}`, payload);
-      }else{
-        const serviceId = props.item?.id;
-        if(!serviceId){
-          console.log("Service non trouvé");
-        }
-        await axios.put(`http://localhost:8000/api/service/${serviceId}`, payload);
+    };
+
+    if (props.formMode === "create") {
+      if (props.type === 'product') {
+        await axios.post('http://localhost:8000/api/product', payload, config);
+      } else {
+        await axios.post('http://localhost:8000/api/service', payload, config);
+      }
+    } else { // Modification
+      const itemId = props.item?.id;
+      if (!itemId) {
+        console.log(`${props.type === 'product' ? 'Produit' : 'Service'} non trouvé`);
+        return;
       }
 
+      const url = `http://localhost:8000/api/${props.type}/${itemId}`;
+      await axios.put(url, payload, config);
     }
+
     emit("formSubmitted");
+
     form.value = {
       id: 0,
       title: '',
@@ -67,11 +76,11 @@ const submitForm = async () => {
       price: 0,
       stock: 0,
       categories: []
-    }
-  }catch(error){
-    console.log("Impossible de soumettre le formulaire ", error);
+    };
+  } catch (error) {
+    console.log("Impossible de soumettre le formulaire", error);
   }
-}
+};
 watch(
   () => props.item,
   (newItem) => {
