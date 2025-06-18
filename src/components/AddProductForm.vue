@@ -56,7 +56,7 @@ const submitForm = async () => {
         return;
       }
 
-      const url = `/${props.type}/${itemId}`;
+      const url = `/api/${props.type}/${itemId}`;
       await api.put(url, payload);
     }
 
