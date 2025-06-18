@@ -138,5 +138,26 @@ const router = createRouter({
     }
   }
 })
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = !!localStorage.getItem('token')
+  const userRoles: string[] = JSON.parse(localStorage.getItem('roles') || '[]')
+
+  // Vérifie si la route nécessite une authentification
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    console.log(userRoles)
+    //return next('/login')
+  }
+
+  // Vérifie les rôles si spécifiés
+  if (to.meta.roles && Array.isArray(to.meta.roles)) {
+    const hasAccess = to.meta.roles.some((role: string) => userRoles.includes(role))
+    if (!hasAccess) {
+      console.log(userRoles)
+     // return next('/login') // Crée cette page si nécessaire
+    }
+  }
+
+  return next()
+})
 
 export default router
