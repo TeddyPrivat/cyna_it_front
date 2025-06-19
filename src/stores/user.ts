@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getPayloadFromToken } from '@/services/getPayloadFromToken';
 import { fetchUser as fetchUserData } from '@/services/user';

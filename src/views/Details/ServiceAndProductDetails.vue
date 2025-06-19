@@ -7,10 +7,11 @@ import type { Product } from "@/types/Product.ts";
 
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import axios from 'axios';
 
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
+
+//console.log('User in cart:', userStore.user);
 
 // Récupère les infos du user via le token de connexion si elles ne sont pas déjà chargées
 onMounted(async () => {
@@ -18,7 +19,7 @@ onMounted(async () => {
 });
 
 async function fetchUser() {
-    const { data } = await axios.get('/api/user')
+    const { data } = await api.get('/api/users')
     user.value = data
 }
 
@@ -59,7 +60,7 @@ async function addToCart() {
       product_id: props.type === 'product' ? props.id : null,
       service_id: props.type === 'service' ? props.id : null,
     };
-    await axios.post(`http://localhost:8000/api/carts/${user.value.id}`, payload);
+    await api.post(`http://localhost:8000/api/carts/${user.value.id}`, payload);
     addToCartMsg.value = 'Ajouté au panier !';
   } catch (e) {
     addToCartMsg.value = "Erreur lors de l'ajout au panier.";
@@ -67,6 +68,7 @@ async function addToCart() {
     isAdding.value = false;
   }
 }
+ 
 </script>
 
 <template>

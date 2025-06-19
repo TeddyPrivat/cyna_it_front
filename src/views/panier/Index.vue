@@ -52,8 +52,16 @@ import { useUserStore } from '@/stores/user.ts'
 
 interface CartItem {
     id: number
-    product_id?: number
-    service_id?: number
+    product?: {
+        imgUrl?: string
+        title: string
+        price: number
+    } | null
+    service?: {
+        img_url?: string
+        title: string
+        price: number
+    } | null
     image: string
     name: string
     price: number
@@ -62,54 +70,43 @@ interface CartItem {
 
 const cartItems: Ref<CartItem[]> = ref([])
 
-
-const user = useUserStore().user
-
-// if (user){
-//   async function fetchUser(): Promise<void> {
-//     const { data } = await api.get<User>(`/api/users/${user.id}`)
-//     user.value = data
-//   }
-// }
-
+const userStore = useUserStore()
 
 async function fetchCart(): Promise<void> {
-    if (user && user) {
-        const { data } = await api.get<{ items: CartItem[] }>(`/api/cart/${user.id}`)
-        const items: CartItem[] = data.items || []
+    console.log('Fetching cart for user:', userStore.user.id)
+    const { data } = await api.get<CartItem[]>(`/api/cart/${userStore.user.id}`)
 
-        await Promise.all(items.map(async (item) => {
-            if (item.product_id) {
-                try {
-                    const response = await api.get(`/api/product/${item.product_id}`)
-                    item.image = response.data.image || '/default-product-image.jpg'
-                    item.name = response.data.name
-                    item.price = response.data.price
-                } catch {
-                    item.image = '/default-product-image.jpg'
-                    item.name = 'Produit indisponible'
-                    item.price = 0
-                }
-            } else if (item.service_id) {
-                try {
-                    const response = await api.get(`/api/service/${item.service_id}`)
-                    item.image = response.data.image || '/default-service-image.jpg'
-                    item.name = response.data.name
-                    item.price = response.data.price
-                } catch {
-                    item.image = '/default-service-image.jpg'
-                    item.name = 'Service indisponible'
-                    item.price = 0
-                }
-            }
-        }))
-
-        cartItems.value = items
-        console.log('Cart items fetched:', cartItems.value)
+    if (!Array.isArray(data) || data.length === 0) {
+        console.error('No items found in cart data:', data)
+        cartItems.value = []
+        return
     }
+
+    const items = data
+
+    items.forEach(item => {
+        if (item.product) {
+            item.image = item.product.imgUrl || '/default-product-image.jpg'
+            item.name = item.product.title
+            item.price = item.product.price
+        } else if (item.service) {
+            item.image = item.service.img_url || '/default-service-image.jpg'
+            item.name = item.service.title
+            item.price = item.service.price
+        } else {
+            item.image = '/default-product-image.jpg'
+            item.name = 'Article inconnu'
+            item.price = 0
+        }
+    })
+
+    cartItems.value = items
+    console.log('Cart items fetched:', cartItems.value)
 }
 
 onMounted(async () => {
+    await userStore.initializeUser()
+    console.log('User in cart:', userStore.user.id)
     await fetchCart()
 })
 
@@ -123,14 +120,15 @@ function formatPrice(price: number): string {
 
 function updateQuantity(item: CartItem): void {
     if (item.quantity < 1) item.quantity = 1
-    // Mettre à jour le panier dans le store ou l'API ici si besoin
+    // TODO: update backend or store
 }
 
 function removeItem(id: number): void {
     cartItems.value = cartItems.value.filter(item => item.id !== id)
-    // Mettre à jour le panier dans le store ou l'API ici si besoin
+    // TODO: update backend or store
 }
 </script>
+
 
 <style scoped>
 .panier-page {
