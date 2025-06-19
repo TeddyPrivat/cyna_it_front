@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import api from '@/services/api.ts'
 import CardItem from '@/components/GenericComponents/CardItem.vue'
 import type { Product } from '@/types/Product.ts'
@@ -20,8 +20,8 @@ function goToDetails(id: number) {
     router.push({name: 'service-details', params: {id}});
   }
 }
-onMounted(async () => {
-  try{
+async function fetchItems() {
+  try {
     if (props.type === "product") {
       const res = await api.get<Product[]>('/api/products');
       items.value = res.data;
@@ -29,9 +29,16 @@ onMounted(async () => {
       const res = await api.get<Service[]>('/api/services');
       items.value = res.data;
     }
-  }catch(error){
-    console.error('Erreur lors du chargement des produits:', error);
+  } catch (error) {
+    console.error('Erreur lors du chargement des éléments:', error);
   }
+}
+
+watch(() => props.type, () => {
+  fetchItems();
+});
+onMounted(() => {
+  fetchItems();
 })
 </script>
 
