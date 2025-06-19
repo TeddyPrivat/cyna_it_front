@@ -10,9 +10,9 @@ const fallbackProductLogo = new URL('@/assets/logo_service_saas.png', import.met
 </script>
 
 <template>
-  <div class="card">
+  <div class="card ">
     <div class="card-image is-centered">
-      <figure class="image">
+      <figure class="image product-image">
         <img
           :src=" item.imgUrl || fallbackProductLogo"
           :alt="'Image du produit ' + item.title"
@@ -62,5 +62,10 @@ hr{
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 </style>

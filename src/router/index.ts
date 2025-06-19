@@ -148,7 +148,8 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'Profile',
-      component: FieldsProfile
+      component: FieldsProfile,
+      meta: { requiresAuth: true}
     },
     {
       path: '/:pathMatch(.*)*',
