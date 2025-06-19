@@ -1,4 +1,4 @@
-<!--components\auth\LoginFields.vue-->
+<!--components\Auth\LoginFields.vue-->
 <script setup lang="ts">
 const props = defineProps<{
   modelValueEmail: string

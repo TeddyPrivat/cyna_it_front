@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { getPayloadFromToken } from '@/services/getPayloadFromToken';
 import { fetchUser as fetchUserData } from '@/services/user';
 
+
 export const useUserStore = defineStore('user', () => {
   const user = ref<any>(null);
   const isLoggedIn = ref(false);

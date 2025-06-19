@@ -4,7 +4,7 @@ import Grid from '@/components/Carousel/Grid.vue'
 import api from '@/services/api'
 import type { Product } from '@/types/Product'
 import { onMounted, ref } from 'vue'
-import ModalSupportMessage from '@/components/ModalSupportMessage.vue'
+import ModalSupportMessage from '@/components/MessageSupport/ModalSupportMessage.vue'
 
 const products = ref<Product[]>([])
 const imageList = ref<{ src: string; description: string }[]>([])

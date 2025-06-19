@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import axios from 'axios'
-import CardItem from '@/components/Products/CardItem.vue'
+import api from '@/services/api.ts'
+import CardItem from '@/components/GenericComponents/CardItem.vue'
 import type { Product } from '@/types/Product.ts'
 import type { Service } from '@/types/Service.ts'
-import type { CardItem as CardItemService } from '@/types/CardItem'
+import type { CardItem as CardItemService } from '@/types/CardItem.ts'
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
@@ -23,10 +23,10 @@ function goToDetails(id: number) {
 onMounted(async () => {
   try{
     if (props.type === "product") {
-      const res = await axios.get<Product[]>('http://localhost:8000/api/products');
+      const res = await api.get<Product[]>('/api/products');
       items.value = res.data;
     } else {
-      const res = await axios.get<Service[]>('http://localhost:8000/api/services');
+      const res = await api.get<Service[]>('/api/services');
       items.value = res.data;
     }
   }catch(error){

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue';
-import api from '@/services/api';
+import api from '@/services/api.ts';
 import type { Category } from '@/types/Category.ts';
 import type { CardItem } from "@/types/CardItem.ts";
 

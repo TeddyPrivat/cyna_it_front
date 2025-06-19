@@ -1,25 +1,26 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Test from '../components/Test.vue'
 import User from "../components/User.vue";
 
 import Login from "@/views/auth/Login.vue";
-// import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
 import SignUp from '@/views/auth/SignUp.vue';
 import Logout from '@/views/auth/Logout.vue'
 import CGU from '@/views/FooterViews/CGU.vue';
 import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
-import AddProductDialog from '@/components/AddProductDialog.vue';
+import AddProductDialog from '@/components/GenericComponents/AddProductDialog.vue';
 import NotFound from '@/views/NotFound.vue';
 import Unauthorized from '@/views/Unauthorized.vue'
 import Accueil from '@/views/Accueil.vue';
-import SupportForm from '@/components/SupportForm.vue'
-import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue'
+import SupportForm from '@/components/MessageSupport/SupportForm.vue'
+import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue';
 
 import FieldsProfile from '@/components/Profile/FieldsProfile.vue'
+import DashboardSuperAdmin from '@/views/dashboard/DashboardSuperAdmin.vue'
 
 import Panier from '@/views/panier/Index.vue';
+import ProductView from '@/views/ProductView.vue'
+import ServiceView from '@/views/ServiceView.vue'
 
 
 const router = createRouter({
@@ -36,10 +37,6 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/test',
-      component: Test,
-    },
-    {
       path: '/users',
       component: User,
     },
@@ -52,6 +49,16 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: SignUp,
+    },
+    {
+      path: '/products',
+      name: 'productList',
+      component: ProductView
+    },
+    {
+      path: '/services',
+      name: 'serviceList',
+      component: ServiceView
     },
     {
       path: '/logout',
@@ -135,7 +142,14 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'Profile',
-      component: FieldsProfile
+      component: FieldsProfile,
+      meta: { requiresAuth: true}
+    },
+    {
+      path: '/dashboard/superadmin',
+      name: 'DashboardSuperAdmin',
+      component: DashboardSuperAdmin,
+      meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
       path: '/:pathMatch(.*)*',

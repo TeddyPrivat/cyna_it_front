@@ -11,7 +11,11 @@ import { storeToRefs } from 'pinia';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 
+
 //console.log('User in cart:', userStore.user);
+
+const fallbackProductLogo = new URL('@/assets/logo_service_saas.png', import.meta.url).href;
+
 
 // Récupère les infos du user via le token de connexion si elles ne sont pas déjà chargées
 onMounted(async () => {
@@ -48,7 +52,7 @@ onMounted(async () => {
 });
 
 function backToList(){
-  router.push({name: 'liste'});
+  router.push(`/${props.type}s`);
 }
 
 async function addToCart() {
@@ -60,7 +64,9 @@ async function addToCart() {
       product_id: props.type === 'product' ? props.id : null,
       service_id: props.type === 'service' ? props.id : null,
     };
-    await api.post(`http://localhost:8000/api/carts/${user.value.id}`, payload);
+
+    await api.post(`/api/carts/${user.value.id}`, payload);
+
     addToCartMsg.value = 'Ajouté au panier !';
   } catch (e) {
     addToCartMsg.value = "Erreur lors de l'ajout au panier.";
@@ -76,36 +82,40 @@ async function addToCart() {
     <button class="button is-ghost" @click="backToList()">Retour à la liste</button>
   </div>
 
-  <div class="container is-flex is-justify-content-center is-align-items-center" style="min-height: 90vh;">
+  <div
+    class="container is-flex is-justify-content-center is-align-items-center"
+    style="min-height: 90vh"
+  >
     <div class="box">
       <div v-if="item">
         <div class="columns is-vcentered">
           <div class="column is-two-third">
             <figure class="image is-3by2">
-              <img v-if="props.type === 'product'"
-                src="@/assets/cyna_logo.png"
-                alt="Image du produit"
+              <img
+                :src=" item.imgUrl || fallbackProductLogo"
+                :alt="'Image du produit ' + item.title"
+                @error="(event) => {
+                const target = event.target as HTMLImageElement;
+                if (target) {
+                  target.src = fallbackProductLogo;
+                }
+              }"
               />
-              <img v-else
-                src="@/assets/logo_service_saas.png"
-                alt="Image du service">
             </figure>
           </div>
 
           <div class="column">
             <h1 class="title has-text-centered">{{ item.title }}</h1>
-            <p class="mb-4 has-text-centered">{{ item.description }}</p>
+            <p class="mb-4 has-text-centered has-text-justified">{{ item.description }}</p>
             <p class="title has-text-centered has-text-weight-bold is-purple-title">
               {{ item.price }}€
             </p>
-            <button
-              class="button is-primary mt-4"
-              :disabled="isAdding"
-              @click="addToCart"
-            >
+            <div class="is-flex is-justify-content-center">
+              <button class="button is-primary mt-4 is-responsive" :disabled="isAdding" @click="addToCart">
               <span v-if="isAdding" class="loader is-small"></span>
               <span v-else>Ajouter au panier</span>
-            </button>
+              </button>
+            </div>
             <p v-if="addToCartMsg" class="mt-2">{{ addToCartMsg }}</p>
           </div>
         </div>
@@ -116,7 +126,7 @@ async function addToCart() {
 </template>
 
 <style scoped>
-.is-purple-title{
+.is-purple-title {
   color: #7200ff;
 }
 .loader {
@@ -131,7 +141,11 @@ async function addToCart() {
   margin-right: 5px;
 }
 @keyframes spin {
-  0% { transform: rotate(0deg);}
-  100% { transform: rotate(360deg);}
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

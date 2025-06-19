@@ -32,7 +32,8 @@ onMounted(() => {
           style="max-height: 3rem"
         />
       </router-link>
-      <router-link class="navbar-item has-text-white" to="/"> Produits et services</router-link>
+      <router-link class="navbar-item has-text-white" to="/products"> Produits</router-link>
+      <router-link class="navbar-item has-text-white" to="/services"> Services</router-link>
     </div>
 
     <div class="navbar-end is-align-items-center">

@@ -1,7 +1,7 @@
-<!--views\auth\Login.vue-->
+<!--views\Auth\Login.vue-->
 <script setup lang="ts">
 import { ref } from 'vue'
-import LoginFields from '@/components/auth/LoginFields.vue'
+import LoginFields from '@/components/Auth/LoginFields.vue'
 import { login } from '@/services/auth'
 import { forgetPassword } from '@/services/auth'
 import { useRouter } from 'vue-router'
