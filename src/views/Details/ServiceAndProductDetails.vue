@@ -67,14 +67,14 @@ async function addToCart() {
 
     await api.post(`/api/carts/${user.value.id}`, payload);
 
-    addToCartMsg.value = 'Ajouté au panier !';
+    addToCartMsg.value = 'Ajouté au Cart !';
   } catch (e) {
-    addToCartMsg.value = "Erreur lors de l'ajout au panier.";
+    addToCartMsg.value = "Erreur lors de l'ajout au Cart.";
   } finally {
     isAdding.value = false;
   }
 }
- 
+
 </script>
 
 <template>
