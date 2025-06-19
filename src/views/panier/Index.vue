@@ -47,11 +47,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, type Ref } from 'vue'
-import axios from 'axios'
 import api from '@/services/api'
-import { useUserStore } from '@/stores/user'
-
-
+import { useUserStore } from '@/stores/user.ts'
 
 interface CartItem {
     id: number
@@ -63,30 +60,28 @@ interface CartItem {
     quantity: number
 }
 
-interface User {
-    id: number
-    [key: string]: any
-}
-
 const cartItems: Ref<CartItem[]> = ref([])
 
 
-const user: Ref<User | null> = ref(useUserStore.user);
+const user = useUserStore().user
 
-async function fetchUser(): Promise<void> {
-    const { data } = await api.get<User>(`/api/users/${user.value.id}`)
-    user.value = data
-}
+// if (user){
+//   async function fetchUser(): Promise<void> {
+//     const { data } = await api.get<User>(`/api/users/${user.id}`)
+//     user.value = data
+//   }
+// }
+
 
 async function fetchCart(): Promise<void> {
-    if (user.value && user.value.id) {
-        const { data } = await axios.get<{ items: CartItem[] }>(`/api/cart/${user.value.id}`)
+    if (user && user) {
+        const { data } = await api.get<{ items: CartItem[] }>(`/api/cart/${user.id}`)
         const items: CartItem[] = data.items || []
 
         await Promise.all(items.map(async (item) => {
             if (item.product_id) {
                 try {
-                    const response = await axios.get(`/api/product/${item.product_id}`)
+                    const response = await api.get(`/api/product/${item.product_id}`)
                     item.image = response.data.image || '/default-product-image.jpg'
                     item.name = response.data.name
                     item.price = response.data.price
@@ -97,7 +92,7 @@ async function fetchCart(): Promise<void> {
                 }
             } else if (item.service_id) {
                 try {
-                    const response = await axios.get(`/api/service/${item.service_id}`)
+                    const response = await api.get(`/api/service/${item.service_id}`)
                     item.image = response.data.image || '/default-service-image.jpg'
                     item.name = response.data.name
                     item.price = response.data.price
@@ -115,7 +110,6 @@ async function fetchCart(): Promise<void> {
 }
 
 onMounted(async () => {
-    await fetchUser()
     await fetchCart()
 })
 
