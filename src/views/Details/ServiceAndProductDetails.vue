@@ -47,7 +47,7 @@ onMounted(async () => {
 });
 
 function backToList(){
-  router.push({name: 'liste'});
+  router.push(`/${props.type}s`);
 }
 
 async function addToCart() {
@@ -74,19 +74,21 @@ async function addToCart() {
     <button class="button is-ghost" @click="backToList()">Retour à la liste</button>
   </div>
 
-  <div class="container is-flex is-justify-content-center is-align-items-center" style="min-height: 90vh;">
+  <div
+    class="container is-flex is-justify-content-center is-align-items-center"
+    style="min-height: 90vh"
+  >
     <div class="box">
       <div v-if="item">
         <div class="columns is-vcentered">
           <div class="column is-two-third">
             <figure class="image is-3by2">
-              <img v-if="props.type === 'product'"
+              <img
+                v-if="props.type === 'product'"
                 src="@/assets/cyna_logo.png"
                 alt="Image du produit"
               />
-              <img v-else
-                src="@/assets/logo_service_saas.png"
-                alt="Image du service">
+              <img v-else src="@/assets/logo_service_saas.png" alt="Image du service" />
             </figure>
           </div>
 
@@ -96,11 +98,7 @@ async function addToCart() {
             <p class="title has-text-centered has-text-weight-bold is-purple-title">
               {{ item.price }}€
             </p>
-            <button
-              class="button is-primary mt-4"
-              :disabled="isAdding"
-              @click="addToCart"
-            >
+            <button class="button is-primary mt-4" :disabled="isAdding" @click="addToCart">
               <span v-if="isAdding" class="loader is-small"></span>
               <span v-else>Ajouter au panier</span>
             </button>
@@ -114,7 +112,7 @@ async function addToCart() {
 </template>
 
 <style scoped>
-.is-purple-title{
+.is-purple-title {
   color: #7200ff;
 }
 .loader {
@@ -129,7 +127,11 @@ async function addToCart() {
   margin-right: 5px;
 }
 @keyframes spin {
-  0% { transform: rotate(0deg);}
-  100% { transform: rotate(360deg);}
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

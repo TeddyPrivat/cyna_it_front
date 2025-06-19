@@ -1,36 +1,40 @@
 <script setup lang="ts">
-import type { Product } from '@/types/Product.ts'
-import type { Service } from '@/types/Service.ts'
-defineProps<{item: Product | Service }>();
+// import type { Product } from '@/types/Product.ts';
+// import type { Service } from '@/types/Service.ts';
+import type { CardItem } from '@/types/CardItem.ts'
 
-function isProduct(item: Product | Service): item is Product {
-  return !!item && typeof item === 'object' && 'imgUrl' in item && 'stock' in item
-}
+defineProps<{ item: CardItem }>();
+
+const fallbackProductLogo = new URL('@/assets/logo_service_saas.png', import.meta.url).href;
+
 </script>
 
 <template>
-<div class="card">
+  <div class="card">
     <div class="card-image is-centered">
       <figure class="image">
-        <img v-if="isProduct(item)"
-          src="@/assets/cyna_logo.png"
-          alt="Image du produit"
-        />
-        <img v-else
-             src="@/assets/logo_service_saas.png"
-             alt="Image du service"
+        <img
+          :src=" item.imgUrl || fallbackProductLogo"
+          :alt="'Image du produit ' + item.title"
+          @error="(event) => {
+            const target = event.target as HTMLImageElement;
+            if (target) {
+              target.src = fallbackProductLogo;
+            }
+          }"
         />
       </figure>
     </div>
-  <div class="card-content">
-    <div class="is-flex is-justify-content-space-between is-align-items-center">
-      <p class="title truncate-one-line is-6 m-0">{{item.title}}</p>
-      <p class="has-text-weight-bold ml-1">{{item.price}}€</p>
+    <div class="card-content">
+      <div class="is-flex is-justify-content-space-between is-align-items-center">
+        <p class="title truncate-one-line is-6 m-0">{{ item.title }}</p>
+        <p class="has-text-weight-bold ml-1">{{ item.price }}€</p>
+      </div>
+      <p class="subtitle mt-2 truncate-multiline">{{ item.description }}</p>
     </div>
-    <p class="subtitle mt-2 truncate-multiline">{{item.description}}</p>
   </div>
-</div>
 </template>
+
 
 <style scoped>
 img{
