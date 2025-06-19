@@ -45,23 +45,22 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
+import api from '@/services/api.ts'
 
 const cartItems = ref([])
 
 const user = ref(null)
 
 async function fetchUser() {
-    // Supposons que l'API utilisateur retourne l'utilisateur connecté à /api/user
-    const { data } = await axios.get('/api/user')
+    const { data } = await api.get('/api/user')
     user.value = data
 }
 
 async function fetchCart() {
     if (user.value && user.value.id) {
-        const { data } = await axios.get(`/api/carte/${user.value.id}`)
+        const { data } = await api.get(`/api/carte/${user.value.id}`)
         cartItems.value = data.items || []
     }
 }

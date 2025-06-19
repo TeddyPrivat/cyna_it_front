@@ -55,7 +55,7 @@ async function addToCart() {
       product_id: props.type === 'product' ? props.id : null,
       service_id: props.type === 'service' ? props.id : null,
     };
-    await axios.post(`http://localhost:8000/api/carts/${user.value.id}`, payload);
+    await api.post(`/api/carts/${user.value.id}`, payload);
     addToCartMsg.value = 'Ajouté au panier !';
   } catch (e) {
     addToCartMsg.value = "Erreur lors de l'ajout au panier.";

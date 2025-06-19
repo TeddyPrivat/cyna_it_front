@@ -15,11 +15,14 @@ import NotFound from '@/views/NotFound.vue';
 import Unauthorized from '@/views/Unauthorized.vue'
 import Accueil from '@/views/Accueil.vue';
 import SupportForm from '@/components/SupportForm.vue'
-import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue'
+import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue';
+// import type { Product } from '@/types/Product.ts';
 
 import FieldsProfile from '@/components/Profile/FieldsProfile.vue'
 
 import Panier from '@/views/panier/Index.vue';
+import ProductView from '@/views/ProductView.vue'
+import ServiceView from '@/views/ServiceView.vue'
 
 
 const router = createRouter({
@@ -52,6 +55,16 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: SignUp,
+    },
+    {
+      path: '/products',
+      name: 'productList',
+      component: ProductView
+    },
+    {
+      path: '/services',
+      name: 'serviceList',
+      component: ServiceView
     },
     {
       path: '/logout',
