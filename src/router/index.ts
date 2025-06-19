@@ -18,6 +18,7 @@ import Unauthorized from '@/views/Unauthorized.vue'
 import Accueil from '@/views/Accueil.vue';
 import SupportForm from '@/components/SupportForm.vue'
 import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue'
+import Panier from '@/views/panier/Index.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -79,6 +80,12 @@ const router = createRouter({
       path: '/mentions-legales',
       name: 'mentions-legales',
       component: LegalsMentions
+    },
+    //Panier
+    {
+      path: '/panier',
+      name: 'panier',
+      component: Panier
     },
     {
       path: '/dashboard/products',
