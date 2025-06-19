@@ -100,14 +100,16 @@ async function addToCart() {
 
           <div class="column">
             <h1 class="title has-text-centered">{{ item.title }}</h1>
-            <p class="mb-4 has-text-centered">{{ item.description }}</p>
+            <p class="mb-4 has-text-centered has-text-justified">{{ item.description }}</p>
             <p class="title has-text-centered has-text-weight-bold is-purple-title">
               {{ item.price }}€
             </p>
-            <button class="button is-primary mt-4" :disabled="isAdding" @click="addToCart">
+            <div class="is-flex is-justify-content-center">
+              <button class="button is-primary mt-4 is-responsive" :disabled="isAdding" @click="addToCart">
               <span v-if="isAdding" class="loader is-small"></span>
               <span v-else>Ajouter au panier</span>
-            </button>
+              </button>
+            </div>
             <p v-if="addToCartMsg" class="mt-2">{{ addToCartMsg }}</p>
           </div>
         </div>
