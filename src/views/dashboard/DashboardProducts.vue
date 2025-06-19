@@ -2,9 +2,9 @@
 import api from '@/services/api';
 import type { Product } from '@/types/Product.ts';
 import { computed, onMounted, ref } from 'vue';
-import DeleteProductDialog from '@/components/DeleteProductDialog.vue';
-import AddProductDialog from '@/components/AddProductDialog.vue';
-import StockAlertNotification from '@/components/StockAlertNotification.vue';
+import DeleteProductDialog from '@/components/GenericComponents/DeleteProductDialog.vue';
+import AddProductDialog from '@/components/GenericComponents/AddProductDialog.vue';
+import StockAlertNotification from '@/components/Dashboard/StockAlertNotification.vue';
 import type {CardItem} from "@/types/CardItem.ts";
 import type {Service} from "@/types/Service.ts";
 

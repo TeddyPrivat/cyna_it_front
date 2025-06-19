@@ -10,11 +10,11 @@ import Logout from '@/views/auth/Logout.vue'
 import CGU from '@/views/FooterViews/CGU.vue';
 import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
 import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
-import AddProductDialog from '@/components/AddProductDialog.vue';
+import AddProductDialog from '@/components/GenericComponents/AddProductDialog.vue';
 import NotFound from '@/views/NotFound.vue';
 import Unauthorized from '@/views/Unauthorized.vue'
 import Accueil from '@/views/Accueil.vue';
-import SupportForm from '@/components/SupportForm.vue'
+import SupportForm from '@/components/MessageSupport/SupportForm.vue'
 import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue';
 // import type { Product } from '@/types/Product.ts';
 

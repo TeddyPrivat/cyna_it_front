@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AddProductForm from "@/components/AddProductForm.vue";
+import AddProductForm from "@/components/GenericComponents/AddProductForm.vue";
 import type { CardItem } from '@/types/CardItem.ts'
 
 defineProps<{

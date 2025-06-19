@@ -13,12 +13,6 @@
 </template>
 
 <script setup lang="ts">
-
-import Test from "@/components/Test.vue";
-import User from "@/components/User.vue";
-import Signin from "@/components/auth/SignIn.vue";
-
-import ListItems from '@/components/Products/ListItems.vue';
 import FooterComponent from "@/components/FooterComponent.vue";
 import { useRoute } from 'vue-router';
 import Header from '@/components/Header.vue'

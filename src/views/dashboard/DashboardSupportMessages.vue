@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/services/api'
 import type { MessageSupport } from '@/types/MessageSupport.ts'
-import CardMessage from '@/components/CardMessage.vue'
+import CardMessage from '@/components/MessageSupport/CardMessage.vue'
 import { computed, onMounted, ref } from 'vue'
 
 let messages = ref<MessageSupport[]>([]);

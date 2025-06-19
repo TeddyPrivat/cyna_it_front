@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SupportForm from '@/components/SupportForm.vue'
+import SupportForm from '@/components/MessageSupport/SupportForm.vue'
 defineProps<{
   show: boolean
 }>();

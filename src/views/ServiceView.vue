@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import ListItems from '@/components/Products/ListItems.vue'
+import ListItems from '@/components/GenericComponents/ListItems.vue'
 </script>
 
 <template>

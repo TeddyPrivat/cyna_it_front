@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import api from '@/services/api.ts'
-import CardItem from '@/components/Products/CardItem.vue'
+import CardItem from '@/components/GenericComponents/CardItem.vue'
 import type { Product } from '@/types/Product.ts'
 import type { Service } from '@/types/Service.ts'
-import type { CardItem as CardItemService } from '@/types/CardItem'
+import type { CardItem as CardItemService } from '@/types/CardItem.ts'
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
