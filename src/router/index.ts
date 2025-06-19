@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Test from '../components/Test.vue'
 import User from "../components/User.vue";
 
 import Login from "@/views/auth/Login.vue";
-// import ListItems from '@/components/Products/ListItems.vue';
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
 import SignUp from '@/views/auth/SignUp.vue';
 import Logout from '@/views/auth/Logout.vue'
@@ -16,7 +14,6 @@ import Unauthorized from '@/views/Unauthorized.vue'
 import Accueil from '@/views/Accueil.vue';
 import SupportForm from '@/components/MessageSupport/SupportForm.vue'
 import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue';
-// import type { Product } from '@/types/Product.ts';
 
 import FieldsProfile from '@/components/Profile/FieldsProfile.vue'
 import DashboardSuperAdmin from '@/views/dashboard/DashboardSuperAdmin.vue'
@@ -38,10 +35,6 @@ const router = createRouter({
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
-    },
-    {
-      path: '/test',
-      component: Test,
     },
     {
       path: '/users',
