@@ -28,7 +28,7 @@
                         <td>{{ formatPrice(item.price) }}</td>
                         <td>{{ formatPrice(item.price * item.quantity) }}</td>
                         <td>
-                            <button class="btn btn-danger" @click="removeItem(item.id)">Supprimer</button>
+                            <button class="btn btn-danger isResponsive" @click="removeItem(item.id)">Supprimer</button>
                         </td>
                     </tr>
                 </tbody>
@@ -45,24 +45,67 @@
     </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted, type Ref } from 'vue'
 import axios from 'axios'
 
-const cartItems = ref([])
+interface CartItem {
+    id: number
+    product_id?: number
+    service_id?: number
+    image: string
+    name: string
+    price: number
+    quantity: number
+}
 
-const user = ref(null)
+interface User {
+    id: number
+    [key: string]: any
+}
 
-async function fetchUser() {
-    // Supposons que l'API utilisateur retourne l'utilisateur connecté à /api/user
-    const { data } = await axios.get('/api/user')
+const cartItems: Ref<CartItem[]> = ref([])
+
+const user: Ref<User | null> = ref(null)
+
+async function fetchUser(): Promise<void> {
+    const { data } = await axios.get<User>('/api/user')
     user.value = data
 }
 
-async function fetchCart() {
+async function fetchCart(): Promise<void> {
     if (user.value && user.value.id) {
-        const { data } = await axios.get(`/api/carte/${user.value.id}`)
-        cartItems.value = data.items || []
+        const { data } = await axios.get<{ items: CartItem[] }>(`/api/cart/${user.value.id}`)
+        const items: CartItem[] = data.items || []
+
+        await Promise.all(items.map(async (item) => {
+            if (item.product_id) {
+                try {
+                    const response = await axios.get(`/api/product/${item.product_id}`)
+                    item.image = response.data.image || '/default-product-image.jpg'
+                    item.name = response.data.name
+                    item.price = response.data.price
+                } catch {
+                    item.image = '/default-product-image.jpg'
+                    item.name = 'Produit indisponible'
+                    item.price = 0
+                }
+            } else if (item.service_id) {
+                try {
+                    const response = await axios.get(`/api/service/${item.service_id}`)
+                    item.image = response.data.image || '/default-service-image.jpg'
+                    item.name = response.data.name
+                    item.price = response.data.price
+                } catch {
+                    item.image = '/default-service-image.jpg'
+                    item.name = 'Service indisponible'
+                    item.price = 0
+                }
+            }
+        }))
+
+        cartItems.value = items
+        console.log('Cart items fetched:', cartItems.value)
     }
 }
 
@@ -75,20 +118,19 @@ const cartTotal = computed(() =>
     cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
 )
 
-function formatPrice(price) {
+function formatPrice(price: number): string {
     return price.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
 }
 
-function updateQuantity(item) {
+function updateQuantity(item: CartItem): void {
     if (item.quantity < 1) item.quantity = 1
     // Mettre à jour le panier dans le store ou l'API ici si besoin
 }
 
-function removeItem(id) {
+function removeItem(id: number): void {
     cartItems.value = cartItems.value.filter(item => item.id !== id)
     // Mettre à jour le panier dans le store ou l'API ici si besoin
 }
-
 </script>
 
 <style scoped>

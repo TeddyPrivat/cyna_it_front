@@ -7,16 +7,20 @@ import type { Product } from "@/types/Product.ts";
 
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
+import axios from 'axios';
 
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 
 // Récupère les infos du user via le token de connexion si elles ne sont pas déjà chargées
 onMounted(async () => {
-  if (!user.value) {
-    await userStore.initializeUser();
-  }
+  await fetchUser();
 });
+
+async function fetchUser() {
+    const { data } = await axios.get('/api/user')
+    user.value = data
+}
 
 const item = ref<Service | Product>();
 const router = useRouter();
