@@ -18,6 +18,7 @@ const fallbackProductLogo = new URL('@/assets/logo_service_saas.png', import.met
 
 
 // Récupère les infos du user via le token de connexion si elles ne sont pas déjà chargées
+/*
 onMounted(async () => {
   await fetchUser();
 });
@@ -26,6 +27,7 @@ async function fetchUser() {
     const { data } = await api.get('/api/users')
     user.value = data
 }
+*/
 
 const item = ref<Service | Product>();
 const router = useRouter();
@@ -33,6 +35,7 @@ const props = defineProps<{
   id: number,
   type: 'product' | 'service'
 }>();
+
 
 const isAdding = ref(false);
 const addToCartMsg = ref('');
@@ -60,15 +63,22 @@ async function addToCart() {
   isAdding.value = true;
   addToCartMsg.value = '';
   try {
+    // Prepare the payload with the raw item data, not the ref
     const payload = {
-      product_id: props.type === 'product' ? props.id : null,
-      service_id: props.type === 'service' ? props.id : null,
+      product: props.type === 'product' && item.value.id ? item.value.id : null,
+      service: props.type === 'service' && item.value.id ? item.value.id : null,
     };
 
-    await api.post(`/api/carts/${user.value.id}`, payload);
+    console.log(
+      'Payload to add to cart:',
+      payload.product ? payload.product : payload.service
+    );
+
+    await api.post(`/api/cart/${user.value.id}`, payload);
 
     addToCartMsg.value = 'Ajouté au panier !';
   } catch (e) {
+    console.error('Erreur lors de l\'ajout au panier:', e);
     addToCartMsg.value = "Erreur lors de l'ajout au panier.";
   } finally {
     isAdding.value = false;
