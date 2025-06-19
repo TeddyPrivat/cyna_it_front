@@ -5,12 +5,28 @@ import api from '@/services/api';
 import type { Service } from '@/types/Service.ts'
 import type { Product } from "@/types/Product.ts";
 
+import { useUserStore } from '@/stores/user';
+import { storeToRefs } from 'pinia';
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
+
+// Récupère les infos du user via le token de connexion si elles ne sont pas déjà chargées
+onMounted(async () => {
+  if (!user.value) {
+    await userStore.initializeUser();
+  }
+});
+
 const item = ref<Service | Product>();
 const router = useRouter();
 const props = defineProps<{
   id: number,
   type: 'product' | 'service'
 }>();
+
+const isAdding = ref(false);
+const addToCartMsg = ref('');
 
 onMounted(async () => {
   try{
@@ -25,10 +41,28 @@ onMounted(async () => {
     console.log("Impossible d'afficher en détails le service ou le produit", error);
   }
 });
+
 function backToList(){
   router.push({name: 'liste'});
 }
 
+async function addToCart() {
+  if (!user.value?.id) return;
+  isAdding.value = true;
+  addToCartMsg.value = '';
+  try {
+    const payload = {
+      product_id: props.type === 'product' ? props.id : null,
+      service_id: props.type === 'service' ? props.id : null,
+    };
+    await axios.post(`http://localhost:8000/api/carts/${user.value.id}`, payload);
+    addToCartMsg.value = 'Ajouté au panier !';
+  } catch (e) {
+    addToCartMsg.value = "Erreur lors de l'ajout au panier.";
+  } finally {
+    isAdding.value = false;
+  }
+}
 </script>
 
 <template>
@@ -58,6 +92,15 @@ function backToList(){
             <p class="title has-text-centered has-text-weight-bold is-purple-title">
               {{ item.price }}€
             </p>
+            <button
+              class="button is-primary mt-4"
+              :disabled="isAdding"
+              @click="addToCart"
+            >
+              <span v-if="isAdding" class="loader is-small"></span>
+              <span v-else>Ajouter au panier</span>
+            </button>
+            <p v-if="addToCartMsg" class="mt-2">{{ addToCartMsg }}</p>
           </div>
         </div>
       </div>
@@ -66,9 +109,23 @@ function backToList(){
   </div>
 </template>
 
-
 <style scoped>
 .is-purple-title{
   color: #7200ff;
+}
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #7200ff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
 }
 </style>
