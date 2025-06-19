@@ -5,7 +5,7 @@ import CardMessage from '@/components/CardMessage.vue'
 import { computed, onMounted, ref } from 'vue'
 
 let messages = ref<MessageSupport[]>([]);
-const searchedInput = ref("");
+const searchedInput = ref<string>("");
 
 const filteredList = computed(() => { //computed qui permet d'afficher dynamiquement la liste en fonction de la recherche
   return messages.value.filter(message => { // recherche possible sur le nom, prénom, email

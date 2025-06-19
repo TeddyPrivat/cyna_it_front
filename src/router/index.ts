@@ -19,6 +19,7 @@ import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages
 // import type { Product } from '@/types/Product.ts';
 
 import FieldsProfile from '@/components/Profile/FieldsProfile.vue'
+import DashboardSuperAdmin from '@/views/dashboard/DashboardSuperAdmin.vue'
 
 import Panier from '@/views/panier/Index.vue';
 import ProductView from '@/views/ProductView.vue'
@@ -150,6 +151,12 @@ const router = createRouter({
       name: 'Profile',
       component: FieldsProfile,
       meta: { requiresAuth: true}
+    },
+    {
+      path: '/dashboard/superadmin',
+      name: 'DashboardSuperAdmin',
+      component: DashboardSuperAdmin,
+      meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
       path: '/:pathMatch(.*)*',
