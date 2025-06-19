@@ -28,7 +28,7 @@
                         <td>{{ formatPrice(item.price) }}</td>
                         <td>{{ formatPrice(item.price * item.quantity) }}</td>
                         <td>
-                            <button class="btn btn-danger isResponsive" @click="removeItem(item.id)">Supprimer</button>
+                            <button class="btn btn-danger" @click="removeItem(item.id)">Supprimer</button>
                         </td>
                     </tr>
                 </tbody>
