@@ -48,6 +48,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, type Ref } from 'vue'
 import axios from 'axios'
+import api from '@/services/api'
+import { useUserStore } from '@/stores/user'
+
+
 
 interface CartItem {
     id: number
@@ -66,10 +70,11 @@ interface User {
 
 const cartItems: Ref<CartItem[]> = ref([])
 
-const user: Ref<User | null> = ref(null)
+
+const user: Ref<User | null> = ref(useUserStore.user);
 
 async function fetchUser(): Promise<void> {
-    const { data } = await axios.get<User>('/api/user')
+    const { data } = await api.get<User>(`/api/users/${user.value.id}`)
     user.value = data
 }
 
