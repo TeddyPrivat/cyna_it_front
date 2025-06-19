@@ -1,26 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import User from "../components/User.vue";
 
-import Login from "@/views/auth/Login.vue";
+import Login from "@/views/Auth/Login.vue";
 import ServiceAndProductDetails from '@/views/Details/ServiceAndProductDetails.vue';
-import SignUp from '@/views/auth/SignUp.vue';
-import Logout from '@/views/auth/Logout.vue'
+import SignUp from '@/views/Auth/SignUp.vue';
+import Logout from '@/views/Auth/Logout.vue';
 import CGU from '@/views/FooterViews/CGU.vue';
 import LegalsMentions from '@/views/FooterViews/LegalsMentions.vue';
-import DashboardProducts from '@/views/dashboard/DashboardProducts.vue'
+import DashboardProducts from '@/views/Dashboard/DashboardProducts.vue'
 import AddProductDialog from '@/components/GenericComponents/AddProductDialog.vue';
 import NotFound from '@/views/NotFound.vue';
 import Unauthorized from '@/views/Unauthorized.vue'
 import Accueil from '@/views/Accueil.vue';
 import SupportForm from '@/components/MessageSupport/SupportForm.vue'
-import DashboardSupportMessages from '@/views/dashboard/DashboardSupportMessages.vue';
-
+import DashboardSupportMessages from '@/views/Dashboard/DashboardSupportMessages.vue';
 import FieldsProfile from '@/components/Profile/FieldsProfile.vue'
-import DashboardSuperAdmin from '@/views/dashboard/DashboardSuperAdmin.vue'
-
-import Panier from '@/views/panier/Index.vue';
-import ProductView from '@/views/ProductView.vue'
-import ServiceView from '@/views/ServiceView.vue'
+import DashboardSuperAdmin from '@/views/Dashboard/DashboardSuperAdmin.vue';
+import ListItems from "@/components/GenericComponents/ListItems.vue";
+import Panier from '@/views/Cart/Index.vue';
 
 
 const router = createRouter({
@@ -53,12 +50,18 @@ const router = createRouter({
     {
       path: '/products',
       name: 'productList',
-      component: ProductView
+      component: ListItems,
+      props:{
+        type: 'product'
+      }
     },
     {
       path: '/services',
       name: 'serviceList',
-      component: ServiceView
+      component: ListItems,
+      props:{
+        type: 'service'
+      }
     },
     {
       path: '/logout',
@@ -95,12 +98,12 @@ const router = createRouter({
     },
     //Panier
     {
-      path: '/panier',
-      name: 'panier',
+      path: '/Cart',
+      name: 'Cart',
       component: Panier
     },
     {
-      path: '/dashboard/products',
+      path: '/Dashboard/products',
       name: 'DashboardProducts',
       component: DashboardProducts,
       props: {
@@ -109,13 +112,13 @@ const router = createRouter({
       meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
-      path: '/dashboard/product/add',
+      path: '/Dashboard/product/add',
       name: 'DashboardAppProduct',
       component: AddProductDialog,
       meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
     },
     {
-      path: '/dashboard/services',
+      path: '/Dashboard/services',
       name: 'DashboardServices',
       component: DashboardProducts,
       props: {
@@ -129,7 +132,7 @@ const router = createRouter({
       component: SupportForm
     },
     {
-      path: '/dashboard/support/message',
+      path: '/Dashboard/support/message',
       name: 'DashboardMessageSupport',
       component: DashboardSupportMessages,
       meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
@@ -146,7 +149,7 @@ const router = createRouter({
       meta: { requiresAuth: true}
     },
     {
-      path: '/dashboard/superadmin',
+      path: '/Dashboard/superadmin',
       name: 'DashboardSuperAdmin',
       component: DashboardSuperAdmin,
       meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
