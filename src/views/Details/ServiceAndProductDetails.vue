@@ -12,6 +12,8 @@ import axios from 'axios';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 
+const fallbackProductLogo = new URL('@/assets/logo_service_saas.png', import.meta.url).href;
+
 // Récupère les infos du user via le token de connexion si elles ne sont pas déjà chargées
 onMounted(async () => {
   await fetchUser();
@@ -84,11 +86,15 @@ async function addToCart() {
           <div class="column is-two-third">
             <figure class="image is-3by2">
               <img
-                v-if="props.type === 'product'"
-                src="@/assets/cyna_logo.png"
-                alt="Image du produit"
+                :src=" item.imgUrl || fallbackProductLogo"
+                :alt="'Image du produit ' + item.title"
+                @error="(event) => {
+                const target = event.target as HTMLImageElement;
+                if (target) {
+                  target.src = fallbackProductLogo;
+                }
+              }"
               />
-              <img v-else src="@/assets/logo_service_saas.png" alt="Image du service" />
             </figure>
           </div>
 
