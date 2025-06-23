@@ -2,29 +2,25 @@
 import Carousel from '@/components/Carousel/Carousel.vue'
 import Grid from '@/components/Carousel/Grid.vue'
 import api from '@/services/api'
-import type { Product } from '@/types/Product'
+import type { CardItem } from '@/types/CardItem.ts'
+import type { Category } from '@/types/Category'
 import { onMounted, ref } from 'vue'
 import ModalSupportMessage from '@/components/MessageSupport/ModalSupportMessage.vue'
 
-const products = ref<Product[]>([])
+// Références
+const CardItem = ref<CardItem[]>([])
 const imageList = ref<{ src: string; description: string; id: number }[]>([])
 const imageListType = 'produits'
 
-const services = ref<Product[]>([])
+const services = ref<CardItem[]>([])
 const serviceImageList = ref<{ src: string; description: string; id: number }[]>([])
 const serviceImageListType = 'services'
 
 const showModalSupport = ref<boolean>(false)
 const successSupport = ref<boolean>(false)
 
-const myList = [
-  'Catégorie 1',
-  'Catégorie 2',
-  'Catégorie 3',
-  'Catégorie 4',
-  'Catégorie 5',
-  'Catégorie 5',
-]
+const categories = ref<Category[]>([])
+const myList = ref<string[]>([])
 
 function isSupportFormSubmitted() {
   showModalSupport.value = false
@@ -34,27 +30,34 @@ function isSupportFormSubmitted() {
 onMounted(async () => {
   try {
     // Récupération des produits
-    const resProducts = await api.get<Product[]>('/api/products')
-    products.value = resProducts.data
-    imageList.value = products.value.map((product) => ({
-      src: product.imgUrl,
-      description: product.title,
-      id: product.id,
+    const resProducts = await api.get<CardItem[]>('/api/products')
+    CardItem.value = resProducts.data
+    imageList.value = CardItem.value.map((CardItem) => ({
+      src: CardItem.imgUrl,
+      description: CardItem.title,
+      id: CardItem.id,
     }))
 
     // Récupération des services
-    const resServices = await api.get<Product[]>('/api/services')
+    const resServices = await api.get<CardItem[]>('/api/services')
     services.value = resServices.data
     serviceImageList.value = services.value.map((service) => ({
       src: service.imgUrl,
       description: service.title,
       id: service.id,
     }))
+
+    // Récupération des catégories
+    const resCategories = await api.get<Category[]>('/api/categories')
+    categories.value = resCategories.data
+    myList.value = categories.value.map(cat => cat.categoryName)
+
   } catch (error) {
-    console.error('Erreur lors du chargement des produits ou services:', error)
+    console.error('Erreur lors du chargement des produits, services ou catégories:', error)
   }
 })
 </script>
+
 
 <template>
   <main>
@@ -66,7 +69,7 @@ onMounted(async () => {
 
     <div class="title is-6 mt-6 box">
       <p>Liste des catégories</p>
-      <a class="subtitle is-6" href="#">Voir tout</a>
+      <a class="subtitle is-6" href="/all">Voir tout</a>
     </div>
     <Grid :items="myList" :columns="2">
       <template #default="{ item }">
