@@ -3,17 +3,28 @@
     <div class="mt-5">
       <div
         v-if="visibleSlides.length > 0"
-        class="box custom-carousel columns is-mobile is-multiline is-vcentered has-background-light"
+        class="custom-carousel columns is-mobile is-multiline is-vcentered "
       >
         <div
           class="column is-one-third"
           v-for="(item, i) in visibleSlides"
           :key="i"
         >
-          <figure class="image is-4by3">
-            <img v-if="item?.src" :src="item.src" :alt="item.description || 'Image'" @error="handleImageError($event)"/>
-          </figure>
-          <p class="has-text-centered mt-2">{{ item.description }}</p>
+          <div class="box is-hovered has-background-light">
+            <figure class="image is-4by3">
+              <img
+                :src="item.src && item.src.trim() !== ''
+                  ? item.src : props.contentType === 'produits'
+                    ? defaultImageProduct : defaultImageService
+                  "
+                :alt="item.description || 'Image'"
+                @error="handleImageError($event)"
+                @click="goToDetails(item.id)"
+              />
+            </figure>
+            <p class="has-text-centered mt-2 has-text-dark">{{ item.description }}</p>
+          </div>
+
         </div>
       </div>
 
@@ -29,35 +40,31 @@
           <span class="icon"><i class="fas fa-chevron-right"></i></span>
         </button>
       </div>
-
-<!--      <div v-if="images.length > 1" class="has-text-centered mt-2">-->
-<!--        <span-->
-<!--          v-for="(index) in images.length"-->
-<!--          :key="index"-->
-<!--          class="tag mx-1"-->
-<!--          :class="{ 'is-primary': index === current, 'is-light': index !== current }"-->
-<!--          @click="goTo(index)"-->
-<!--        >-->
-<!--          {{ index + 1 }}-->
-<!--        </span>-->
-<!--      </div>-->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import router from '@/router'
 
-const defaultImage = new URL('@/assets/cyna_logo.png', import.meta.url).href
+const defaultImageProduct = new URL('@/assets/cyna_logo.png', import.meta.url).href
+const defaultImageService = new URL('@/assets/logo_service_saas.png', import.meta.url).href
+
 
 function handleImageError(event: Event) {
   const target = event.target as HTMLImageElement
-  target.src = defaultImage
+  if (props.contentType === 'produits') {
+    target.src = defaultImageProduct
+  } else {
+    target.src = defaultImageService
+  }
 }
 
 type CarouselItem = {
   src: string
   description: string
+  id: number
 }
 
 const props = defineProps<{
@@ -103,8 +110,17 @@ const visibleSlides = computed(() => {
   ]
 })
 
+function goToDetails(id: number) {
+  if(props.contentType === "produits") {
+    router.push({name: 'product-details', params: {id}});
+  }else{
+    router.push({name: 'service-details', params: {id}});
+  }
+}
+
 onMounted(() => {
   intervalId = window.setInterval(next, 10000)
+
 })
 
 onBeforeUnmount(() => {
@@ -122,5 +138,9 @@ onBeforeUnmount(() => {
   object-fit: cover;
   width: 100%;
   height: 100%;
+}
+.is-hovered:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
 }
 </style>

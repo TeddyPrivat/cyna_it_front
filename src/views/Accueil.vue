@@ -7,11 +7,16 @@ import { onMounted, ref } from 'vue'
 import ModalSupportMessage from '@/components/MessageSupport/ModalSupportMessage.vue'
 
 const products = ref<Product[]>([])
-const imageList = ref<{ src: string; description: string }[]>([])
-// en minuscule svp
+const imageList = ref<{ src: string; description: string; id: number }[]>([])
 const imageListType = 'produits'
+
+const services = ref<Product[]>([])
+const serviceImageList = ref<{ src: string; description: string; id: number }[]>([])
+const serviceImageListType = 'services'
+
 const showModalSupport = ref<boolean>(false)
 const successSupport = ref<boolean>(false)
+
 const myList = [
   'Catégorie 1',
   'Catégorie 2',
@@ -20,26 +25,33 @@ const myList = [
   'Catégorie 5',
   'Catégorie 5',
 ]
-// const isLoading = ref(true)
 
 function isSupportFormSubmitted() {
   showModalSupport.value = false
   successSupport.value = true
 }
+
 onMounted(async () => {
   try {
-    const res = await api.get<Product[]>('/api/products')
-    products.value = res.data
-    // console.log(products.value)
-
+    // Récupération des produits
+    const resProducts = await api.get<Product[]>('/api/products')
+    products.value = resProducts.data
     imageList.value = products.value.map((product) => ({
       src: product.imgUrl,
       description: product.title,
+      id: product.id,
     }))
 
-    // console.log(imageList)
+    // Récupération des services
+    const resServices = await api.get<Product[]>('/api/services')
+    services.value = resServices.data
+    serviceImageList.value = services.value.map((service) => ({
+      src: service.imgUrl,
+      description: service.title,
+      id: service.id,
+    }))
   } catch (error) {
-    console.error('Erreur lors du chargement des produits:', error)
+    console.error('Erreur lors du chargement des produits ou services:', error)
   }
 })
 </script>
@@ -48,10 +60,10 @@ onMounted(async () => {
   <main>
     <div class="title is-4">Carousel de produits</div>
     <!--    <div v-if="isLoading">Chargement des produits...</div>-->
-    <Carousel :content-type="imageListType" :images="imageList" />
-    <div class="title is-4 mt-6">
-      Texte fixe bonzour les amis, pour faire les annonces depuis le back office
-    </div>
+    <Carousel :content-type="imageListType" :images="imageList"/>
+    <div class="title is-4 mt-6">Carousel de services</div>
+    <Carousel :content-type="serviceImageListType" :images="serviceImageList" />
+
     <div class="title is-6 mt-6 box">
       <p>Liste des catégories</p>
       <a class="subtitle is-6" href="#">Voir tout</a>
@@ -63,9 +75,6 @@ onMounted(async () => {
         </div>
       </template>
     </Grid>
-    <!--    <div v-if="isLoading">Chargement des produits...</div>-->
-    <!--    <div class="title is-4 mt-6">Les produits du momemt</div>-->
-    <!--    <Carousel :content-type="imageListType" :images="imageList"/>-->
     <div class="is-flex is-justify-content-center mt-5">
       <button class="button is-purple is-large is-responsive" @click="showModalSupport = true">
         Faire une demande de support
