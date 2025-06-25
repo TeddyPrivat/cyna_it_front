@@ -25,7 +25,6 @@ onMounted(async () => {
     // Appel de l’API
     const response = await api.get(`/api/validate/user/${userId}/${token}`)
 
-    // Vérifie la réponse
     if (response.status === 200) {
       success.value = true
     } else {
@@ -33,11 +32,20 @@ onMounted(async () => {
     }
   } catch (err: any) {
     console.error(err)
-    errorMessage.value = err.message || 'Erreur inconnue.'
+
+    // Axios : err.response.status
+    const status = err.response?.status
+
+    if (status === 406) {
+      errorMessage.value = "Email déjà validé (code 406)"
+    } else {
+      errorMessage.value = err.message || 'Erreur inconnue.'
+    }
   } finally {
     isLoading.value = false
   }
 })
+
 </script>
 
 <template>
@@ -58,7 +66,8 @@ onMounted(async () => {
 
       <div v-else>
         <h1 class="title is-4 has-text-danger">Échec de la validation</h1>
-        <p class="subtitle is-6">{{ errorMessage }}</p>
+<!--        <p class="subtitle is-6">{{ errorMessage }}</p>-->
+        <p class="subtitle is-6 has-text-danger" v-if="errorMessage">{{ errorMessage }}</p>
         <router-link to="/login" class="button is-danger mt-4">
           Veuillez vous connecter avant de réessayer
         </router-link>
