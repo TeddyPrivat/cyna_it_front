@@ -18,6 +18,7 @@ import FieldsProfile from '@/components/Profile/FieldsProfile.vue'
 import DashboardSuperAdmin from '@/views/Dashboard/DashboardSuperAdmin.vue';
 import ListItems from "@/components/GenericComponents/ListItems.vue";
 import Panier from '@/views/Cart/Index.vue';
+import EmailValidationVue from '@/views/EmailValidationVue.vue'
 
 
 const router = createRouter({
@@ -153,6 +154,11 @@ const router = createRouter({
       name: 'DashboardSuperAdmin',
       component: DashboardSuperAdmin,
       meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] }
+    },
+    {
+      path: '/validate/user/:token',
+      name: 'EmailValidation',
+      component: EmailValidationVue
     },
     {
       path: '/:pathMatch(.*)*',

@@ -141,6 +141,6 @@ onBeforeUnmount(() => {
 }
 .is-hovered:hover {
   transform: scale(1.05);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 1.5s ease-in-out;
 }
 </style>
