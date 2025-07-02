@@ -6,8 +6,8 @@ export async function login(username: string, password: string) {
   // console.log("username", username)
   // console.log("password", password)
   const response = await api.post('/api/login_check', {
-    username,
-    password,
+    username: username,
+    password: password,
   });
   return response.data.token;
 }
@@ -17,7 +17,6 @@ export async function signup(
   firstname: string,
   lastname: string,
   confirmPassword: string,
-  adress: string = 'chez moi'
 ) {
   const response = await fetch('http://127.0.0.1:8000/api/signup', {
     method: 'POST',
@@ -25,12 +24,11 @@ export async function signup(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      email,
-      password,
+      email: email,
+      password: password,
       confirm_password: confirmPassword,
-      firstname,
-      lastname,
-      adress,
+      firstname: firstname,
+      lastname: lastname,
     }),
   });
 
